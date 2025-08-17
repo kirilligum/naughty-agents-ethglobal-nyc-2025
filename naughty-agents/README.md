@@ -143,21 +143,64 @@ The presentation is a simple HTML file.
 1.  **Open the file:**
     Navigate to the `naughty-agents/pitch-deck/` directory and open the `index.html` file in your web browser.
 
-## 3. User Flow (Demo Scenario)
+## 3. User Flow (Hackathon Demo Script)
 
-1.  **Onboarding:**
-    - **Alice (User):** Opens the dApp, signs in with her email, and in the **User View** can interact with buttons like "Subscribe" and "Deploy Secure Wallet".
-    - **Bob (Reviewer):** Toggles to the **Reviewer View**, enters a valid invite code into the input field, and clicks the "Stake & Register" button to send an on-chain transaction to join the network.
+This flow demonstrates the core functionality of the Naughty Agents protocol and its use of the sponsor technologies.
 
-2.  **The Attack:**
-    - Alice's AI agent, while browsing a simulated social media feed, is "hijacked" by a malicious image.
-    - The agent attempts to drain Alice's wallet by proposing a malicious transaction.
-    - The transaction is intercepted by the on-chain `NaughtyAgentsSecurityModule`. It checks the transaction's hash against the `ActionRegistry`, finds its status is "Unknown," and reverts the transaction. Simultaneously, it flags the action for human review via the `ReviewOracle`.
+**Tools Used in this Demo:**
+- **Coinbase Developer Platform:** CDP Embedded Wallets, CDP SQL API
+- **Zircuit:** Smart Contracts deployed on Zircuit Testnet
+- **Hardhat 3:** Used for all contract development, testing, and deployment.
 
-3.  **Community Defense:**
-    - In the **Reviewer View**, Bob clicks "Refresh" to fetch the latest flagged actions from the backend API. New tasks appear in his dashboard.
-    - He analyzes the action and (in a future implementation) would click buttons to vote on it.
-    - Once enough reviewers vote (meeting the quorum), the `ReviewOracle` calls the `ActionRegistry` to permanently blacklist the action's hash.
+---
 
-4.  **Economic Incentives:**
-    - If a reviewer like Bob makes a bad call, Alice can report him. This triggers the `reportBadReview` function in the `WebOfTrust` contract, which slashes a portion of Bob's stake and also a smaller portion of the stake of the person who invited him.
+### Scene 1: Simple Onboarding
+
+1.  **Presenter:** "First, we'll onboard two users. Alice, a typical user, and Bob, who will become a security reviewer."
+2.  **Action:** Show the dApp UI.
+3.  **Presenter:** "Alice signs up seamlessly using just her email, powered by **CDP Embedded Wallets**. In the background, a new Smart Contract Account is created for her on the **Zircuit Testnet**."
+4.  **Action:** Show the "User View" of the dashboard.
+5.  **Presenter:** "Now, let's switch to Bob. He wants to become a reviewer. He navigates to the 'Reviewer View', enters an invite code, and clicks 'Stake & Register'. This sends a transaction to our `WebOfTrust` contract on **Zircuit**."
+
+### Scene 2: The Attack & On-Chain Defense
+
+1.  **Presenter:** "Next, we'll run our **Python AI Agent** simulator. The agent is browsing a social media feed when it encounters a malicious image designed to hijack it."
+2.  **Action:** Run the agent script in "hijacked" mode: `python agent.py hijacked`.
+3.  **Presenter:** "The hijacked agent now attempts to drain Alice's wallet. But because her wallet is secured by our on-chain module, the transaction is intercepted. The module checks our `ActionRegistry` contract on **Zircuit**, sees the action is unknown, and instantly reverts the transaction while flagging it for review."
+
+### Scene 3: Community Defense via SQL API
+
+1.  **Presenter:** "The malicious action has been stopped, but now it needs to be permanently blacklisted. This is where our human reviewers and the **Coinbase SQL API** come in."
+2.  **Action:** Switch to the "Reviewer View" in the dApp and click "Refresh".
+3.  **Presenter:** "When Bob clicks refresh, our backend makes a call to the **CDP SQL API**. We run a query to `SELECT` all `ActionFlagged` events from our `ReviewOracle` contract on **Zircuit**. The new task instantly appears in his dashboard."
+4.  **Action:** Show the task list in the UI.
+5.  **Presenter:** "Bob sees the malicious request, and votes to blacklist it. Once enough reviewers agree, the action is permanently blacklisted in our `ActionRegistry` on-chain."
+
+## 4. Hackathon Prize Submissions
+
+### a. Coinbase: "Build a Great Onchain App Using CDP"
+
+- **Project:** Naughty Agents - A decentralized, human-in-the-loop security protocol for AI agents.
+- **CDP Tools Used:**
+    - `[x]` **CDP Embedded Wallets:** Used for seamless, email-based user onboarding, which is critical for abstracting away crypto complexity and making the dApp accessible.
+    - `[x]` **CDP Data APIs (SQL API):** Used as the core data layer for our Reviewer Dashboard. The backend server uses the SQL API to efficiently query for `ActionFlagged` events on the Zircuit testnet, providing reviewers with a real-time list of security threats to vote on.
+- **Developer Feedback:**
+    > *(Please add your personal feedback here about your experience using the Coinbase Developer Platform tools.)*
+
+### b. Zircuit: "Best Project on Zircuit"
+
+- **One-Sentence Description:** Naughty Agents is an on-chain firewall, powered by a human-in-the-loop review process, that protects Smart Contract Accounts from malicious transactions proposed by hijacked AI agents.
+- **Zircuit Integration:** The core of our protocol's security logic—the `WebOfTrust`, `ActionRegistry`, and `ReviewOracle` smart contracts—is deployed and verified on the Zircuit Testnet. We chose Zircuit for its focus on security and performance, which are essential for a protocol that acts as a real-time security layer for user transactions. Zircuit's architecture provides a reliable and low-cost environment for the frequent, small interactions our protocol requires (e.g., flagging, voting).
+- **Team Description:**
+    > *(Please add a short description of your team and their backgrounds here.)*
+- **Testing Instructions:** Please refer to the "How to Run" section above for detailed instructions on compiling, testing, and deploying the contracts, as well as running the frontend and simulators.
+- **Feedback on Zircuit:**
+    > *(Please add your personal feedback here about your experience building on Zircuit.)*
+
+### c. Hardhat: Development Environment
+
+- **Tool:** The entire smart contract lifecycle was built, tested, and deployed using the **Hardhat 3** development environment.
+- **How We Used Hardhat:** We leveraged modern Hardhat 3 features to build a robust project:
+    - **Viem & Node.js Test Runner:** All contract tests were written in TypeScript using the new, efficient test runner.
+    - **Ignition:** Deployments to all networks (localhost, Base Sepolia, Zircuit) are managed through a single, reliable Ignition script (`ignition/modules/NaughtyAgents.ts`).
+    - **Configuration:** Hardhat's flexible configuration made it simple to add support for multiple networks like Base and Zircuit.
