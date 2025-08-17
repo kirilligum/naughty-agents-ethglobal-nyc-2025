@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_24-4dd29d60b1b482550fca4df5572955a2e70783d0",
+  "solcVersion": "0.8.24",
+  "solcLongVersion": "0.8.24+commit.e11b9ed9",
+  "userSourceNameMap": {
+    "contracts/ActionRegistry.sol": "project/contracts/ActionRegistry.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/ActionRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.24;\n\ncontract ActionRegistry {\n    // 0: Unknown, 2: Blacklisted\n    mapping(bytes32 => uint8) public actionStatus;\n    address public reviewOracleAddress;\n\n    // Called during deployment/setup (e.g., by Ignition)\n    function setReviewOracleAddress(address _oracleAddress) external {\n        require(reviewOracleAddress == address(0), \"Oracle already set\");\n        reviewOracleAddress = _oracleAddress;\n    }\n\n    modifier onlyReviewOracle() {\n        require(msg.sender == reviewOracleAddress, \"Not authorized\");\n        _;\n    }\n\n    function getActionStatus(bytes32 _actionHash) external view returns (uint8) {\n        return actionStatus[_actionHash];\n    }\n\n    function addToBlacklist(bytes32 _actionHash) external onlyReviewOracle {\n        actionStatus[_actionHash] = 2;\n    }\n}\n"
+      }
+    }
+  }
+}

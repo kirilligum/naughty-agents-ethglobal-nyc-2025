@@ -1,16 +1,19 @@
 {
   "_format": "hh3-sol-build-info-1",
-  "id": "solc-0_8_24-ab7a3db9f3e5c24947d8834d5e1f3bbcfa16c75c",
+  "id": "solc-0_8_24-c75059c23b07cbcf015fcc30a733688c3def0ea0",
   "solcVersion": "0.8.24",
   "solcLongVersion": "0.8.24+commit.e11b9ed9",
   "userSourceNameMap": {
-    "contracts/ReviewOracle.sol": "project/contracts/ReviewOracle.sol",
-    "contracts/WebOfTrust.sol": "project/contracts/WebOfTrust.sol"
+    "contracts/ReviewOracle.sol": "project/contracts/ReviewOracle.sol"
   },
   "input": {
     "language": "Solidity",
     "settings": {
       "evmVersion": "shanghai",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
       "outputSelection": {
         "*": {
           "": [

@@ -6,6 +6,8 @@ import { baseSepolia } from "viem/chains";
 import Header from "./Header";
 import Transaction from "./Transaction";
 import UserBalance from "./UserBalance";
+import UserDashboard from "./UserDashboard";
+import ReviewerDashboard from "./ReviewerDashboard";
 
 /**
  * Create a viem client to access user's balance on the Base Sepolia network
@@ -22,6 +24,7 @@ function SignedInScreen() {
   const { isSignedIn } = useIsSignedIn();
   const { evmAddress } = useEvmAddress();
   const [balance, setBalance] = useState<bigint | undefined>(undefined);
+  const [viewMode, setViewMode] = useState<'user' | 'reviewer'>('user');
 
   const formattedBalance = useMemo(() => {
     if (balance === undefined) return undefined;
@@ -50,6 +53,15 @@ function SignedInScreen() {
           <div className="card card--user-balance">
             <UserBalance balance={formattedBalance} />
           </div>
+
+          <div className="view-toggle button-group">
+            <button className={`button ${viewMode === 'user' ? 'active' : ''}`} onClick={() => setViewMode('user')}>User View</button>
+            <button className={`button ${viewMode === 'reviewer' ? 'active' : ''}`} onClick={() => setViewMode('reviewer')}>Reviewer View</button>
+          </div>
+
+          {viewMode === 'user' && <UserDashboard />}
+          {viewMode === 'reviewer' && <ReviewerDashboard />}
+
           <div className="card card--transaction">
             {isSignedIn && evmAddress && (
               <Transaction balance={formattedBalance} onSuccess={getBalance} />
