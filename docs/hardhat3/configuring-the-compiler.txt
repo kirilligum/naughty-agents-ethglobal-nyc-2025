@@ -1,0 +1,281 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#How to configure the compiler
+
+   Solidity compilation in Hardhat is fully customizable. This guide
+   explains the main ways in which compilation can be configured.
+
+[41]#Configuring the compiler version and settings
+
+   The simplest way to configure compilation is to specify the solc
+   compiler version and, optionally, its settings:
+(BUTTON)solidity: {
+  version: "0.8.29",
+  settings: {
+    /* solc settings */
+  }
+},
+
+   One common use of settings is enabling optimizations. You can also
+   define the number of runs, which affects how the optimizer balances
+   code size and execution cost:
+(BUTTON)solidity: {
+  version: "0.8.29",
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 200
+    }
+  }
+},
+
+   Another use case is enabling the [42]IR-based code generator. This
+   compilation mode can be slower, but it enables more powerful
+   optimizations:
+(BUTTON)solidity: {
+  version: "0.8.29",
+  settings: {
+    viaIR: true
+  }
+},
+
+   The settings property accepts the same options supported by the chosen
+   compiler version. For the full details, check [43]solc's documentation.
+
+[44]#Using multiple solidity versions
+
+   Some projects need to compile different files with different solc
+   versions. To enable this, Hardhat lets you define multiple compiler
+   configurations using an extended format of the solidity property:
+(BUTTON)solidity: {
+  compilers: [
+    {
+      version: "0.7.6"
+    },
+    {
+      version: "0.8.11"
+    },
+    {
+      version: "0.8.29",
+      settings: {
+        optimizer: { enabled: true }
+      }
+    }
+  ]
+},
+
+   Hardhat compiles each Solidity file in the project using the highest
+   configured solc version that is compatible with the version pragma of
+   the file and its dependencies.
+
+   For example, given the configuration above:
+     * A file with pragma solidity ^0.8.0 will be compiled with solc
+       0.8.29, even though 0.8.11 is also compatible with it.
+     * A file with pragma solidity ^0.7.0 will use solc 0.7.6, which is
+       the only valid matching version.
+
+[45]#Overriding configured compilers
+
+   Some projects need to compile specific files using a different compiler
+   version than Hardhat's default choice. You can handle this with the
+   overrides property:
+(BUTTON)solidity: {
+  compilers: [
+    /* configured compilers */
+  ],
+  overrides: {
+    "contracts/Foo.sol": {
+      version: "0.8.11"
+    }
+  }
+},
+
+   In this case, Foo.sol will always be compiled with solc 0.8.11,
+   regardless of the versions defined in solidity.compilers.
+
+   Each entry in the overrides object maps a file to a custom compiler
+   configuration. Just like the main configuration, only the version field
+   is mandatory.
+
+   You can use overrides even if you are using a single solc version, but
+   you still need to use the extended format of the solidity property. For
+   example, you can enable the optimizer only for a single file:
+(BUTTON)solidity: {
+  compilers: [
+    {
+      version: "0.8.29",
+    }
+  ],
+  overrides: {
+    "contracts/Foo.sol": {
+      version: "0.8.29",
+      settings: {
+        optimizer: {
+          enabled: true
+        }
+      }
+    }
+  }
+},
+
+[46]#Generating artifacts from npm dependencies
+
+   By default, Hardhat generates compilation artifacts for all the
+   contracts in your project, but not for those in the project's npm
+   dependencies. If you want to generate artifacts for a specific file in
+   a dependency, you can use the npmFilesToBuild property:
+(BUTTON)solidity: {
+  version: "0.8.29",
+  npmFilesToBuild: [
+    "some-dependency/contracts/SomeContract.sol"
+  ]
+},
+
+   Artifacts can be used to deploy contracts or to obtain their ABIs,
+   among other things. For example, once you've configured Hardhat to
+   generate artifacts for some-dependency/contracts/SomeContract.sol, you
+   can use that contract in a TypeScript test:
+(BUTTON)const someContract = await viem.deployContract("SomeContract");
+
+   [47]Help us improve this page
+   Last Updated:8/13/2025, 6:37:37 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/learn-more/configuring-the-compiler#how-to-configure-the-compiler
+  41. https://hardhat.org/docs/learn-more/configuring-the-compiler#configuring-the-compiler-version-and-settings
+  42. https://docs.soliditylang.org/en/latest/ir-breaking-changes.html
+  43. https://docs.soliditylang.org/en/latest/
+  44. https://hardhat.org/docs/learn-more/configuring-the-compiler#using-multiple-solidity-versions
+  45. https://hardhat.org/docs/learn-more/configuring-the-compiler#overriding-configured-compilers
+  46. https://hardhat.org/docs/learn-more/configuring-the-compiler#generating-artifacts-from-npm-dependencies
+  47. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/learn-more/configuring-the-compiler.md
+
+   Hidden links:
+  49. https://hardhat.org/docs
+  50. https://github.com/NomicFoundation/hardhat
+  51. https://twitter.com/HardhatHQ
+  52. https://hardhat.org/discord
+  53. https://github.com/NomicFoundation/hardhat
+  54. https://twitter.com/HardhatHQ
+  55. https://hardhat.org/discord
+  56. https://github.com/NomicFoundation/hardhat
+  57. https://twitter.com/HardhatHQ
+  58. https://hardhat.org/discord

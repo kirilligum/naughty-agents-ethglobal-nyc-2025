@@ -1,0 +1,185 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#Hardhat 3: beta status
+
+   Hardhat 3 is production-ready and you can migrate today!
+
+   We'll keep it in beta status as we work on missing features and
+   stabilize it in the near future.
+
+[41]#Migration readiness
+
+   We don't expect any major user-facing breaking change in the API, so we
+   encourage projects to migrate to Hardhat 3.
+
+   Take a look at the [42]migration guide to see how to do it.
+
+[43]#Work in progress features
+
+   There are some features that are still in development, and should be
+   released soon:
+     * Ledger support: We are working on porting over the
+       @nomicfoundation/hardhat-ledger plugin, and should be available
+       soon.
+     * Gas reporting: Hardhat 3 will have a built-in alternative for the
+       [44]hardhat-gas-reporter plugin, which will work with Solidity and
+       Typescript tests.
+     * Gas snapshots: The ability to take gas snapshots and compare them
+       is still under development.
+     * hardhat-deploy support: We are working on porting over the
+       [45]hardhat-deploy plugin to Hardhat 3.
+
+[46]#Migration blockers
+
+   If your migration is blocked by a missing feature or plugin, please let
+   us know [47]in this issue.
+
+[48]#Plugin APIs
+
+   The plugin APIs are still in beta status, and we may release small
+   breaking changes in the future. If you are developing a plugin, please
+   keep this in mind, and get in touch with us if you have any questions.
+   [49]Help us improve this page
+   Last Updated:8/13/2025, 6:37:37 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/learn-more/beta-status#hardhat-3-beta-status
+  41. https://hardhat.org/docs/learn-more/beta-status#migration-readiness
+  42. https://hardhat.org/migrate-from-hardhat2
+  43. https://hardhat.org/docs/learn-more/beta-status#work-in-progress-features
+  44. https://www.npmjs.com/package/hardhat-gas-reporter
+  45. https://www.npmjs.com/package/hardhat-deploy
+  46. https://hardhat.org/docs/learn-more/beta-status#migration-blockers
+  47. https://github.com/NomicFoundation/hardhat/issues/7207
+  48. https://hardhat.org/docs/learn-more/beta-status#plugin-apis
+  49. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/learn-more/beta-status.md
+
+   Hidden links:
+  51. https://hardhat.org/docs
+  52. https://github.com/NomicFoundation/hardhat
+  53. https://twitter.com/HardhatHQ
+  54. https://hardhat.org/discord
+  55. https://github.com/NomicFoundation/hardhat
+  56. https://twitter.com/HardhatHQ
+  57. https://hardhat.org/discord
+  58. https://github.com/NomicFoundation/hardhat
+  59. https://twitter.com/HardhatHQ
+  60. https://hardhat.org/discord

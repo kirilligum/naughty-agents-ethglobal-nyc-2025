@@ -1,0 +1,148 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#Node.js support
+
+   Hardhat 3 launches with the support of [41]Node.js node --version ≥
+   v22.10.0 and node --version ≥ v24.0.0.
+
+   After launch, Hardhat 3 will support all subsequent even major versions
+   of Node.js, while they are labeled as Current, Active LTS and
+   Maintenance. This support activates with the launch of Node.js v26 and
+   will continue thereafter.
+   [42]Help us improve this page
+   Last Updated:8/13/2025, 6:37:37 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/reference/nodejs-support#nodejs-support
+  41. https://nodejs.org/
+  42. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/reference/nodejs-support.md
+
+   Hidden links:
+  44. https://hardhat.org/docs
+  45. https://github.com/NomicFoundation/hardhat
+  46. https://twitter.com/HardhatHQ
+  47. https://hardhat.org/discord
+  48. https://github.com/NomicFoundation/hardhat
+  49. https://twitter.com/HardhatHQ
+  50. https://hardhat.org/discord
+  51. https://github.com/NomicFoundation/hardhat
+  52. https://twitter.com/HardhatHQ
+  53. https://hardhat.org/discord

@@ -1,0 +1,254 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#What's new in Hardhat 3
+
+   Hardhat 3 comes with many new features and improvements. Most of these
+   changes are backwards-compatible or easy to adapt to existing projects.
+
+[41]#Support for Solidity Tests
+
+   Hardhat 3 comes with Foundry-compatible Solidity tests, which are fast
+   and ideal for unit testing, and also work great for fuzz and invariant
+   tests. Writing integration tests in TypeScript is still supported and
+   can be used alongside Solidity tests.
+
+   Learn more in [42]our Solidity tests guide.
+
+[43]#Multichain support
+
+   Hardhat 2's development network always behaves like Ethereum Mainnet.
+   Hardhat 3 removes this limitation, letting you choose which kind of
+   chain you want to simulate. And, unlike Hardhat 2, you can configure
+   multiple simulated networks, each with its own chain type.
+
+   The initial release includes first-class support for Ethereum Mainnet
+   and OP Mainnet, and we'll gradually add new chain types over time. In
+   the meantime, a generic chain type can be used as a fallback for
+   networks that are not yet supported. This generic chain type behaves
+   the same as Hardhat Network in Hardhat 2 and works with all of Hardhat
+   3's new features.
+
+[44]#ESM-first
+
+   Hardhat 3 embraces modern JavaScript by using [45]ECMAScript Modules
+   (ESM) by default. Configuration files must now use ESM, although
+   CommonJS (CJS) modules are still supported in scripts and tests.
+
+[46]#Network manager
+
+   A Hardhat 2 task has access to a single, fixed connection for its
+   entire duration. In Hardhat 3, connections are managed explicitly, and
+   tasks can create and use multiple connections simultaneously.
+
+[47]#Test Runner Plugins
+
+   In Hardhat 2, JavaScript tests are always run with a bundled version of
+   Mocha. In Hardhat 3, the test runner is just another plugin and you can
+   choose which one to use. We have official plugins for Mocha and for
+   [48]Node.js's built-in test runner. The recommended option is the
+   Node.js test runner, because it's fast and has no external
+   dependencies.
+
+[49]#Built-in Solidity code coverage
+
+   Hardhat 3 comes with built-in Solidity code coverage, which works out
+   of the box both in Solidity and TypeScript tests. All you need to do is
+   run your tests with --coverage.
+
+[50]#Declarative Configuration
+
+   Hardhat 3 configuration is now fully declarative. This contrasts with
+   Hardhat 2, where part of the configuration came from the side effects
+   of importing plugins or calling configuration functions like task.
+
+[51]#Configuration Variables
+
+   Hardhat 3 has support for Configuration Variables: values of the config
+   that will only be loaded when needed. A similar feature already exists
+   in Hardhat 2, but Hardhat 3's configuration variables are lazy and
+   extensible.
+
+   By default, their values are loaded from environment variables, but
+   this behavior can be customized by plugins. Hardhat 3 comes with an
+   official plugin that lets you store them encrypted on disk.
+
+[52]#Build profiles
+
+   Hardhat 3 introduces support for build profiles, which let you define
+   different compilation settings for different workflows.
+
+[53]#Full npm support
+
+   Anything that can be done with npm is now supported by the build system
+   of Hardhat 3. In most cases, this won't affect you, but advanced
+   scenarios that were difficult or impossible now work out of the box.
+
+[54]#New plugin system
+
+   Hardhat 3 comes with a new hook system that enables easy extension of
+   core functionality and allows plugin authors to add their own
+   extensibility points.
+
+[55]#Typed artifacts
+
+   Hardhat 3 generates TypeScript declarations to have typed artifacts by
+   default. These artifacts can be used by plugins to derive contract type
+   information without a code generation step.
+
+[56]#Programmatic initialization of the Hardhat Runtime Environment
+
+   Apart from accessing a global instance of the Hardhat Runtime
+   Environment by importing it from the hardhat module, you can now
+   initialize multiple independent instances of the HRE programmatically.
+   [57]Help us improve this page
+   Last Updated:8/13/2025, 6:37:37 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/learn-more/whats-new#whats-new-in-hardhat-3
+  41. https://hardhat.org/docs/learn-more/whats-new#support-for-solidity-tests
+  42. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  43. https://hardhat.org/docs/learn-more/whats-new#multichain-support
+  44. https://hardhat.org/docs/learn-more/whats-new#esm-first
+  45. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+  46. https://hardhat.org/docs/learn-more/whats-new#network-manager
+  47. https://hardhat.org/docs/learn-more/whats-new#test-runner-plugins
+  48. https://nodejs.org/api/test.html
+  49. https://hardhat.org/docs/learn-more/whats-new#built-in-solidity-code-coverage
+  50. https://hardhat.org/docs/learn-more/whats-new#declarative-configuration
+  51. https://hardhat.org/docs/learn-more/whats-new#configuration-variables
+  52. https://hardhat.org/docs/learn-more/whats-new#build-profiles
+  53. https://hardhat.org/docs/learn-more/whats-new#full-npm-support
+  54. https://hardhat.org/docs/learn-more/whats-new#new-plugin-system
+  55. https://hardhat.org/docs/learn-more/whats-new#typed-artifacts
+  56. https://hardhat.org/docs/learn-more/whats-new#programmatic-initialization-of-the-hardhat-runtime-environment
+  57. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/learn-more/whats-new.md
+
+   Hidden links:
+  59. https://hardhat.org/docs
+  60. https://github.com/NomicFoundation/hardhat
+  61. https://twitter.com/HardhatHQ
+  62. https://hardhat.org/discord
+  63. https://github.com/NomicFoundation/hardhat
+  64. https://twitter.com/HardhatHQ
+  65. https://hardhat.org/discord
+  66. https://github.com/NomicFoundation/hardhat
+  67. https://twitter.com/HardhatHQ
+  68. https://hardhat.org/discord

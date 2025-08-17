@@ -1,0 +1,707 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#Configuration
+
+   TIP
+
+   Hardhat 3 is production-ready and you can migrate today! We'll keep it
+   in beta status as we work on missing features and stabilize it in the
+   near future.
+
+   When Hardhat is run, it searches for the closest hardhat.config.ts file
+   starting from the Current Working Directory. This file normally lives
+   in the root of your project. An empty hardhat.config.ts is enough for
+   Hardhat to work.
+
+   The entirety of your Hardhat setup (i.e. your config, plugins and
+   custom tasks) is contained in this file.
+
+[41]#Available config options
+
+   To set up your config, you have to export an object from
+   hardhat.config.ts.
+
+   The config options available will depend on the Hardhat plugins you
+   have installed. However, there are some [42]standard options that come
+   from built-in Hardhat plugins and are always available. Additionally,
+   regardless of which of our hardhat-toolbox plugins you have installed,
+   there are some [43]toolbox options that are common to both of them,
+   while other options are specifically available in either the [44]Viem
+   or [45]Ethers toolbox plugins.
+
+[46]#Standard options
+
+   The following options are available even if you don't include any
+   plugins:
+(BUTTON)export default {
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts",
+  },
+  solidity: {
+    version: "0.8.28",
+    settings: {
+      /* solc settings */
+    },
+  },
+  networks: {
+    hardhatMainnet: {
+      type: "edr-simulated",
+      chainType: "l1",
+    },
+    hardhatOp: {
+      type: "edr-simulated",
+      chainType: "op",
+    },
+    sepolia: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("SEPOLIA_RPC_URL"),
+      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    },
+  },
+  test: {
+    solidity: {
+      timeout: 40000,
+      // other solidity tests options
+    },
+  },
+};
+
+   TIP
+
+   You can find more info about using Hardhat configuration variables in
+   the [47]configuration variable guide.
+
+[48]#Path configuration
+
+   You can customize the different paths that Hardhat uses by providing an
+   object to the paths field with the following keys:
+     * sources: The directory where your contracts are stored. This path
+       is resolved relative to your Hardhat config file. Default value:
+       './contracts'.
+     * tests: The directory where your tests are located, or an object
+       containing fields for each installed test runner that points to
+       their respective test locations. This path is resolved relative to
+       your Hardhat config file. Default value: './test'.
+     * cache: The directory used by Hardhat to cache its internal stuff.
+       This path is resolved relative to your Hardhat config file. Default
+       value: './cache'.
+     * artifacts: The directory where the compilation artifacts are
+       stored. This path is resolved relative to your Hardhat config file.
+       Default value: './artifacts'.
+
+[49]#Solidity configuration
+
+   The solidity config is an optional field that can be one of the
+   following:
+     * A solc version to use, e.g. "0.8.28".
+     * An array of solc versions to use, e.g. ["0.7.6", "0.8.28"].
+     * An object which describes the configuration for a single compiler.
+       It contains the following keys:
+          + version: The solc version to use.
+          + settings: An object with the same schema as the settings entry
+            in the [50]Input JSON.
+          + preferWasm: If true, forces Hardhat to use the WebAssembly
+            (wasm) build of solc instead of a native binary. This can
+            improve build reproducibility across platforms, at the cost of
+            slower compilation times.
+          + npmFilesToBuild: A list of source names for which Hardhat
+            should generate artifacts in addition to your project's own
+            sources.
+     * An object which describes multiple compilers and their respective
+       configurations. It contains the following:
+          + compilers: A list of compiler configuration objects like the
+            one above.
+          + overrides: An optional map of compiler configuration override
+            objects. This maps file names to compiler configuration
+            objects.
+          + preferWasm: See above.
+          + npmFilesToBuild: See above.
+     * An object which describes multiple build profiles and their
+       respective configurations. It contains the following:
+          + profiles: A map of build profile names to compiler
+            configuration objects like the one above.
+          + npmFilesToBuild: See above.
+
+[51]#Default EVM Version
+
+   The default EVM version changes based on the compiler version. To
+   specify a different EVM version, modify your hardhat.config.ts:
+(BUTTON)export default {
+  solidity: {
+    version: "0.8.21",
+    settings: {
+      evmVersion: "shanghai",
+    },
+  },
+};
+
+[52]#Network configuration
+
+   The networks config field is an optional object where network names map
+   to their configuration.
+
+   There are two kinds of networks in Hardhat: in-memory simulated
+   networks and [53]JSON-RPC based networks. You can use either of these
+   by setting the type field in the network configuration to either
+   edr-simulated or http, respectively.
+
+   Additionally, simulated networks can be used to test your contracts in
+   different environments, such as Optimism or layer 1 Ethereum, by
+   setting the chainType field to either op or l1, respectively.
+
+   There are a number of options that both network types share, as well as
+   some that are specific to each type.
+
+[54]#Shared network options
+
+   The following options are available for both simulated and JSON-RPC
+   networks:
+     * type: The type of the network. This can be either edr-simulated for
+       simulated networks or http for JSON-RPC networks.
+     * chainId: An optional number, used to validate the network Hardhat
+       connects to. If not present, this validation is omitted.
+     * chainType: Determines the type of chain for this network. This can
+       be either l1 for layer 1 networks like Ethereum, op for layer 2
+       networks like Optimism, or generic for other types of networks.
+       Default value: generic.
+     * from: The address to use as default sender. If not present the
+       first account of the node is used.
+     * gas: Its value should be "auto" or a number or bigint. If a number
+       or bigint is used, it will be the gas limit used by default in
+       every transaction. If "auto" is used, the gas limit will be
+       automatically estimated. Default value: "auto".
+     * gasMultiplier: A number used to multiply the results of gas
+       estimation to give it some slack due to the uncertainty of the
+       estimation process. Default value: 1.
+     * gasPrice: Its value should be "auto" or a number or bigint. This
+       parameter behaves like gas. Default value: "auto".
+
+[55]#Simulated network options
+
+   The following options are specific to simulated networks:
+     * accounts: This field controls which accounts Hardhat uses. It can
+       use a list of local accounts (by setting it to an array of
+       {privateKey, balance} objects) or an [56]HD Wallet. Default value:
+       an HD Wallet with 20 unlocked accounts and a balance of 10,000 ETH
+       each.
+     * allowBlocksWithSameTimestamp: A boolean to allow mining blocks that
+       have the same timestamp. This is not allowed by default because
+       Ethereum's consensus rules specify that each block should have a
+       different timestamp. Default value: false.
+     * allowUnlimitedContractSize: An optional boolean that disables the
+       contract size limit imposed by [57]EIP-170. Default value: false.
+     * blockGasLimit: The block gas limit to use in Hardhat Network's
+       blockchain. Default value: 30_000_000.
+     * coinbase: The address used as coinbase in new blocks. Default
+       value: "0xc014ba5ec014ba5ec014ba5ec014ba5ec014ba5e".
+     * forking: An object that describes the forking configuration and can
+       have the following fields:
+          + url: a URL that points to a JSON-RPC node with state that you
+            want to fork off. There's no default value for this field. It
+            must be provided for the fork to work.
+          + blockNumber: an optional number to pin which block to fork
+            from. If no value is provided, the latest block is used.
+          + enabled: an optional boolean to switch on or off the fork
+            functionality. Default value: true if url is set, false
+            otherwise.
+     * hardfork: This setting changes how Hardhat Network works, to mimic
+       Ethereum's mainnet at a given hardfork. It must be one of
+       "byzantium", "constantinople", "petersburg", "istanbul",
+       "muirGlacier", "berlin", "london", "arrowGlacier", "grayGlacier",
+       "merge", "shanghai", "cancun" and "prague". Default value:
+       "prague".
+     * initialBaseFeePerGas: The baseFeePerGas of the first block. Note
+       that when forking a remote network, the "first block" is the one
+       immediately after the block you forked from. This field must not be
+       present if hardfork is not "london" or a later one. Default value:
+       "1000000000" if not forking. When forking a remote network, if the
+       remote network uses EIP-1559, the first local block will use the
+       right baseFeePerGas according to the EIP, otherwise "10000000000"
+       is used.
+     * initialDate: An optional string setting the date of the blockchain.
+       Valid values are [58]Javascript's date time strings. Default value:
+       the current date and time if not forking another network. When
+       forking another network, the timestamp of the block you forked
+       from, plus one second, is used.
+     * loggingEnabled: A boolean that controls if a simulated network logs
+       every request or not. Default value: false for in-process simulated
+       networks, true for the simulated network used by the node task.
+     * minGasPrice: The minimum gasPrice that a transaction must have.
+       This field must not be present if the hardfork is "london" or a
+       later one. Default value: "0".
+     * mining: An object that configures the mining behavior and can have
+       the following fields:
+          + auto: a boolean used to enable automine. Default value: true.
+          + interval: a number or an array with two numbers to enable
+            interval mining. If the value is a number, blocks will be
+            automatically mined every interval milliseconds. If the value
+            is an array, blocks will be mined at random intervals between
+            the two numbers.
+          + mempool: an object with an order field that can be set to
+            "fifo" or "priority". When set to "fifo", transactions in the
+            mempool are mined in FIFO order. When set to "priority", they
+            will be mined based on the fees paid to the miner. Default
+            value: "priority".
+     * throwOnCallFailures: A boolean that controls if simulated networks
+       throw on call failures. If this value is true, Hardhat will throw
+       combined JavaScript and Solidity stack traces when a call fails. If
+       it is false, it will return the call's return data, which can
+       contain a revert reason. Default value: true.
+     * throwOnTransactionFailures: A boolean that controls if simulated
+       networks throw on transaction failures. If this value is true,
+       Hardhat will throw combined JavaScript and Solidity stack traces on
+       transaction failures. If it is false, it will return the failing
+       transaction hash. In both cases the transactions are added into the
+       blockchain. Default value: true.
+
+[59]#JSON-RPC network options
+
+   The following options are specific to JSON-RPC networks:
+     * accounts: This field controls which accounts Hardhat uses. It can
+       use the node's accounts (by setting it to "remote"), a list of
+       local accounts (by setting it to an array of [60]configuration
+       variables), or use an [61]HD Wallet. Default value: "remote".
+     * url: The URL of the node, passed in via [62]configuration variable.
+       This argument is required for HTTP networks.
+     * httpHeaders: An optional object with headers to be sent in every
+       request to the node. This can be useful for authentication or other
+       purposes.
+     * timeout: An optional number that specifies the timeout for requests
+       to the node, in milliseconds.
+
+[63]#HD Wallet config
+
+   To use an [64]HD Wallet with Hardhat you should set your network's
+   accounts field to an object with the following fields:
+     * mnemonic: A required string with the mnemonic phrase of the wallet.
+       Passed in via [65]configuration variable.
+     * path: The HD parent of all the derived keys. Default value:
+       "m/44'/60'/0'/0".
+     * initialIndex: The initial index to derive. Default value: 0.
+     * count: The number of accounts to derive. Default value: 20.
+     * passphrase: The passphrase for the wallet, passed in via
+       [66]configuration variable. Default value: empty string.
+     * accountsBalance: Only available in simulated networks. The balance
+       of the accounts derived from the HD wallet.
+
+   For example:
+(BUTTON)export default {
+  networks: {
+    sepolia: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("SEPOLIA_RPC_URL"),
+      accounts: {
+        mnemonic: configVariable("ACCOUNTS_MNEMONIC"),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 20,
+        passphrase: configVariable("ACCOUNTS_PASSPHRASE"),
+        // only available when network type === "edr-simulated"
+        accountsBalance: 10n ** 18n, // 1 ETH in wei
+      },
+    },
+  },
+};
+
+[67]#Solidity tests configuration
+
+   By default, Hardhat includes support for tests written in Solidity to
+   test your contracts. You can use the test.solidity entry to configure
+   how they behave. For example, the following config enables isolate
+   mode:
+(BUTTON)const config = {
+  test: {
+    solidity: {
+      isolate: true,
+    },
+  },
+};
+
+   The following options are available for configuring Solidity tests:
+
+   WARNING
+
+   Giving write access to configuration files, source files or executables
+   in a project is considered dangerous, because it can be used by
+   malicious Solidity dependencies to escape the EVM sandbox. It is
+   therefore recommended to give write access to specific safe files only.
+   If write access to a directory is needed, please make sure that it
+   doesn't contain configuration files, source files or executables
+   neither in the top level directory, nor in any subdirectories.
+     * fsPermissions: An optional object to configure file system
+       permissions for cheatcodes. Defaults to no permissions. Exact path
+       matching is used for file permissions. Prefix matching is used for
+       directory permissions.
+          + readFile: An array of file paths that can be read.
+          + writeFile: An array of file paths that can be written.
+          + readWriteFile: An array of file paths that can be both read
+            and written.
+          + readDirectory: An array of directory paths. All files and
+            directories inside these directories can be read.
+          + dangerouslyWriteDirectory: An array of directory paths. All
+            files and directories inside these directories can be written.
+            See warning above to understand why it's dangerous.
+          + dangerouslyReadWriteDirectory: An array of directory paths.
+            All files and directories inside these directories can be both
+            read and written. See warning above to understand why it's
+            dangerous.
+     * isolate: Whether to enable isolation of calls. In isolation mode
+       all top-level calls are executed as a separate transaction in a
+       separate EVM context, enabling more precise gas accounting and
+       transaction state changes. Defaults to false.
+     * ffi: Whether or not to enable the ffi cheatcode. Warning: Enabling
+       this cheatcode has security implications, as it allows tests to
+       execute arbitrary programs on your computer. Defaults to false.
+     * allowInternalExpectRevert: Allow expecting reverts with
+       expectRevert at the same callstack depth as the test. Defaults to
+       false.
+     * from: The value of msg.sender in tests as hex string. Defaults to
+       0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38.
+     * txOrigin: The value of tx.origin in tests as hex string. Defaults
+       to 0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38.
+     * initialBalance: The initial balance of the sender in tests.
+       Defaults to 0xffffffffffffffffffffffff.
+     * blockGasLimit: The gas limit for each test case. Defaults to
+       9_223_372_036_854_775_807 (i64::MAX).
+     * blockBaseFeePerGas: The base fee per gas (in wei) in tests.
+       Defaults to 0.
+     * coinbase: The value of block.coinbase in tests. Defaults to
+       0x0000000000000000000000000000000000000000.
+     * blockTimestamp: The value of block.timestamp in tests. Defaults to
+       1.
+     * blockGasLimit: The block.gaslimit value during EVM execution. Set
+       it to false to disable the block gas limit. Defaults to none.
+     * forking: Optional fork configuration options object. Defaults to
+       none.
+          + url: If set, all tests are run in fork mode using this url or
+            remote name. Defaults to none.
+          + blockNumber: Optional block number to pin the global state
+            fork. If url is set, defaults to the latest block number.
+          + rpcEndpoints: Map of RPC endpoints from chain name to RPC urls
+            for fork cheat codes, e.g. { "optimism":
+            "https://optimism.alchemyapi.io/v2/..." }
+     * fuzz: Optional fuzz testing configuration object.
+          + failurePersistDir: Optional path where fuzz failures are
+            recorded and replayed if set.
+          + failurePersistFile: Name of the file to record fuzz failures,
+            defaults to failures.
+          + runs: The amount of fuzz runs to perform for each fuzz test
+            case. Higher values give more confidence in results at the
+            cost of testing speed. Defaults to 256.
+          + maxTestRejects: The maximum number of combined inputs that may
+            be rejected before the test as a whole aborts. "Global"
+            filters apply to the whole test case. If the test case is
+            rejected, the whole thing is regenerated. Defaults to 65536.
+          + seed: Hexadecimal string. Optional seed for the fuzzing RNG
+            algorithm. Defaults to None.
+          + dictionaryWeight: Integer between 0 and 100. The weight of the
+            dictionary. A higher dictionary weight will bias the fuzz
+            inputs towards "interesting" values, e.g. boundary values like
+            type(uint256).max or contract addresses from your environment.
+            Defaults to 40.
+          + includeStorage: The flag indicating whether to include values
+            from storage. Defaults to true.
+          + includePushBytes: The flag indicating whether to include push
+            bytes values. Defaults to true.
+     * invariant: Optional invariant testing configuration object. If an
+       invariant config setting is not set, but a corresponding fuzz
+       config value is set, then the fuzz config value will be used.
+          + failurePersistDir: Optional path where invariant failures are
+            recorded and replayed if set.
+          + runs: The number of runs that must execute for each invariant
+            test group. Defaults to 256.
+          + depth: The number of calls executed to attempt to break
+            invariants in one run. Defaults to 500.
+          + failOnRevert: Fails the invariant fuzzing if a revert occurs.
+            Defaults to false.
+          + callOverride: Overrides unsafe external calls when running
+            invariant tests, useful for e.g. performing reentrancy checks.
+            Defaults to false.
+          + dictionaryWeight: Integer between 0 and 100. The weight of the
+            dictionary. A higher dictionary weight will bias the fuzz
+            inputs towards "interesting" values, e.g. boundary values like
+            type(uint256).max or contract addresses from your environment.
+            Defaults to 40.
+          + includeStorage: The flag indicating whether to include values
+            from storage. Defaults to true.
+          + includePushBytes: The flag indicating whether to include push
+            bytes values. Defaults to true.
+          + shrinkRunLimit: The maximum number of attempts to shrink a
+            failed sequence. The shrink process is disabled if set to 0.
+            Defaults to 5000.
+
+[68]#Toolbox options
+
+   Hardhat provides two official toolboxes, each with a set of plugins
+   meant to simplify setup: [69]hardhat-toolbox-viem and
+   [70]hardhat-toolbox-mocha-ethers.
+
+   Both toolboxes include the hardhat-ignition and hardhat-verify plugins,
+   and their configuration is documented elsewhere:
+     * hardhat-ignition: see the [71]Hardhat Ignition documentation.
+     * hardhat-verify: see the [72]verification guide.
+
+[73]#Viem Toolbox options
+
+   The Viem toolbox makes the [74]Node.js test runner available for use in
+   your Hardhat project. You can tell Hardhat where your tests are located
+   by setting the paths.tests.nodejs field in your config:
+(BUTTON)export default {
+  paths: {
+    tests: {
+      nodejs: "./paths/to/your/tests",
+    },
+  },
+};
+
+[75]#Ethers Toolbox options
+
+   The Ethers toolbox makes the [76]Mocha test runner available for use in
+   your Hardhat project. You can tell Hardhat where your tests are located
+   by setting the paths.tests.mocha field in your config:
+(BUTTON)export default {
+  paths: {
+    tests: {
+      mocha: "./paths/to/your/tests",
+    },
+  },
+};
+
+   Additionally, you can configure Mocha itself by providing an object to
+   the test.mocha field, like this:
+(BUTTON)export default {
+  test: {
+    mocha: {
+      timeout: 20_000, // Set the timeout for tests to 20 seconds
+    },
+  },
+};
+
+   TIP
+
+   All options available in Mocha can be used here. You can find more
+   information in the [77]Mocha documentation.
+
+[78]#Typechain configuration
+
+   The Ethers toolbox comes with Typechain support out of the box. You can
+   configure it by providing an object to the typechain field in your
+   config, like this:
+(BUTTON)export default {
+  typechain: {
+    /**
+     * The absolute path to the folder where the generated types will be stored.
+     * By default, this is set to the "types" folder in the root of your Hardhat
+ project.
+     */
+    outDir: "./types",
+
+    /**
+     * Determines whether overloads with full signatures (e.g., deposit(uint256)
+)
+     * should always be generated, even if there are no overloads.
+     * Defaults to false.
+     */
+    alwaysGenerateOverloads: false,
+
+    /**
+     * Indicates whether TypeChain should be skipped during compilation.
+     * If true, TypeChain will not be executed during the compilation process.
+     * Defaults to false.
+     */
+    dontOverrideCompile: false,
+
+    /**
+     * Generates basic union types for overloaded functions without adding extra
+     * properties to help TypeScript identify specific cases.
+     * Defaults to false.
+     */
+    discriminateTypes: false,
+
+    /**
+     * Skips type-checking in the generated files.
+     * Defaults to false.
+     */
+    tsNocheck: false,
+  },
+};
+
+   [79]Help us improve this page
+   Last Updated:8/14/2025, 2:46:07 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/reference/configuration#configuration
+  41. https://hardhat.org/docs/reference/configuration#available-config-options
+  42. https://hardhat.org/docs/reference/configuration#standard-options
+  43. https://hardhat.org/docs/reference/configuration#toolbox-options
+  44. https://hardhat.org/docs/reference/configuration#viem-toolbox-options
+  45. https://hardhat.org/docs/reference/configuration#ethers-toolbox-options
+  46. https://hardhat.org/docs/reference/configuration#standard-options
+  47. https://hardhat.org/docs/learn-more/configuration-variables
+  48. https://hardhat.org/docs/reference/configuration#path-configuration
+  49. https://hardhat.org/docs/reference/configuration#solidity-configuration
+  50. https://docs.soliditylang.org/en/latest/using-the-compiler.html#input-description
+  51. https://hardhat.org/docs/reference/configuration#default-evm-version
+  52. https://hardhat.org/docs/reference/configuration#network-configuration
+  53. https://eth.wiki/json-rpc/API
+  54. https://hardhat.org/docs/reference/configuration#shared-network-options
+  55. https://hardhat.org/docs/reference/configuration#simulated-network-options
+  56. https://hardhat.org/docs/reference/configuration#hd-wallet-config
+  57. https://eips.ethereum.org/EIPS/eip-170
+  58. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse#Date_Time_String_Format
+  59. https://hardhat.org/docs/reference/configuration#json-rpc-network-options
+  60. https://hardhat.org/docs/learn-more/configuration-variables
+  61. https://hardhat.org/docs/reference/configuration#hd-wallet-config
+  62. https://hardhat.org/docs/learn-more/configuration-variables
+  63. https://hardhat.org/docs/reference/configuration#hd-wallet-config
+  64. https://github.com/ethereumbook/ethereumbook/blob/develop/05wallets.asciidoc#hd_wallets
+  65. https://hardhat.org/docs/learn-more/configuration-variables
+  66. https://hardhat.org/docs/learn-more/configuration-variables
+  67. https://hardhat.org/docs/reference/configuration#solidity-tests-configuration
+  68. https://hardhat.org/docs/reference/configuration#toolbox-options
+  69. https://hardhat.org/plugins/nomicfoundation-hardhat-toolbox-viem
+  70. https://hardhat.org/plugins/nomicfoundation-hardhat-toolbox-mocha-ethers
+  71. https://hardhat.org/ignition/docs/config
+  72. https://hardhat.org/docs/learn-more/smart-contract-verification
+  73. https://hardhat.org/docs/reference/configuration#viem-toolbox-options
+  74. https://nodejs.org/api/test.html
+  75. https://hardhat.org/docs/reference/configuration#ethers-toolbox-options
+  76. https://mochajs.org/
+  77. https://mochajs.org/
+  78. https://hardhat.org/docs/reference/configuration#typechain-configuration
+  79. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/reference/configuration.md
+
+   Hidden links:
+  81. https://hardhat.org/docs
+  82. https://github.com/NomicFoundation/hardhat
+  83. https://twitter.com/HardhatHQ
+  84. https://hardhat.org/discord
+  85. https://github.com/NomicFoundation/hardhat
+  86. https://twitter.com/HardhatHQ
+  87. https://hardhat.org/discord
+  88. https://github.com/NomicFoundation/hardhat
+  89. https://twitter.com/HardhatHQ
+  90. https://hardhat.org/discord

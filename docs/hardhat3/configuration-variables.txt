@@ -1,0 +1,323 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#How to use configuration variables and the keystore plugin
+
+   Hardhat projects often need values that vary from one developer to
+   another or that shouldn't be committed to source control, like private
+   keys or RPC URLs with API keys. To manage this securely and flexibly,
+   Hardhat supports configuration variables. This guide covers how to use
+   them and how to securely store sensitive values with the
+   hardhat-keystore plugin.
+
+[41]#Using configuration variables
+
+   A common example of a value that you don't want to hardcode is an RPC
+   URL that includes an API key, such as one from [42]Alchemy or
+   [43]Infura:
+(BUTTON)const config = {
+  networks: {
+    sepolia: {
+      url: "https://eth-sepolia.g.alchemy.com/v2/ABC123...",
+      // ...
+    },
+  },
+};
+
+   To solve this, Hardhat lets you use configuration variables. These are
+   placeholders that get replaced with actual values at runtime:
+(BUTTON)import { configVariable } from "hardhat/config";
+
+const config = {
+  networks: {
+    sepolia: {
+      url: configVariable("SEPOLIA_RPC_URL"),
+      // ...
+    },
+  },
+};
+
+   This way, the actual value is never committed to your repository.
+
+   By default, configuration variables get their values from environment
+   variables. For example, in the snippet above, Hardhat will look for an
+   environment variable named SEPOLIA_RPC_URL when it needs the value. You
+   can define it inline when running a task:
+   npm
+   pnpm
+(BUTTON)SEPOLIA_RPC_URL='<https://eth-sepolia.g.alchemy.com/v2/ABC123>...' npx h
+ardhat run ./my-script.ts --network sepolia
+
+(BUTTON)SEPOLIA_RPC_URL='<https://eth-sepolia.g.alchemy.com/v2/ABC123>...' pnpm
+hardhat run ./my-script.ts --network sepolia
+
+   But configuration variables are extensible: plugins can define
+   alternative ways to obtain their values. This means you're not limited
+   to environment variables—you can plug in other sources, such as
+   encrypted storage, cloud secrets managers, or any custom logic.
+
+   Another important detail is that configuration variables are lazy,
+   meaning that they're only resolved when actually needed. For example,
+   if you define a network that uses a configuration variable for its RPC
+   URL, and that variable isn't set, it won't cause any issues unless you
+   actually try to connect to that network. Running tasks like compile, or
+   executing tests that don't use the network, will work just fine.
+
+[44]#The hardhat-keystore plugin
+
+   In the previous section we said that configuration variables are
+   resolved from environment variables by default. This works, but it
+   comes with some downsides. For example, if you type secrets directly
+   into your shell, they'll end up in your shell history. You also have to
+   re-set them every time, or rely on tools like .env files, which have
+   their own limitations.
+
+   To address these issues, Hardhat provides an official plugin called
+   hardhat-keystore. It lets you store sensitive values in an encrypted
+   file and use them as configuration variables, without having to type
+   them every time or commit them to disk in plain text.
+
+[45]#Setup
+
+   The hardhat-keystore plugin is part of the example project, but it can
+   also be installed manually:
+    1. Install the plugin:
+       npm
+       pnpm
+(BUTTON)npm install --save-dev @nomicfoundation/hardhat-keystore
+
+(BUTTON)pnpm install --save-dev @nomicfoundation/hardhat-keystore
+
+    2. Add it to the list of plugins in your Hardhat configuration:
+(BUTTON)import hardhatKeystore from "@nomicfoundation/hardhat-keystore";
+
+const config: HardhatUserConfig = {
+  plugins: [
+    hardhatKeystore,
+    // ...other plugins...
+  ],
+  // ...other config...
+};
+
+export default config;
+
+[46]#Using the keystore
+
+   To store an encrypted secret, use the keystore set task. For example,
+   to store an Alchemy API key under the name SEPOLIA_RPC_URL, run:
+   npm
+   pnpm
+(BUTTON)npx hardhat keystore set SEPOLIA_RPC_URL
+
+(BUTTON)pnpm hardhat keystore set SEPOLIA_RPC_URL
+
+   When you run this task for the first time, you'll be prompted to create
+   a password for your keystore. After that, every time you add a new
+   value, you'll need to enter that password to confirm the operation. The
+   secret is then encrypted in a file in your home directory.
+
+   Once a value is stored in the keystore, you can use it in your
+   configuration just like any other configuration variable. For example,
+   if you stored an RPC URL under the name SEPOLIA_RPC_URL, you can
+   reference it in exactly the same way we did above:
+(BUTTON)import { configVariable } from "hardhat/config";
+
+const config = {
+  networks: {
+    sepolia: {
+      url: configVariable("SEPOLIA_RPC_URL"),
+      // ...
+    },
+  },
+};
+
+   When the configuration variable is needed, Hardhat will prompt you to
+   enter the password and decrypt the value from the keystore.
+
+   If the value isn't needed—because the task doesn't use it—you won't be
+   prompted at all. This means you can define encrypted variables freely
+   without affecting tasks like compile or tests that don't touch the
+   network.
+
+[47]#Managing encrypted variables
+
+   Besides keystore set, Hardhat provides several other tasks to help you
+   manage your encrypted configuration variables.
+     * To view the value of a stored variable, use the keystore get task:
+       npm
+       pnpm
+(BUTTON)npx hardhat keystore get SEPOLIA_RPC_URL
+
+(BUTTON)pnpm hardhat keystore get SEPOLIA_RPC_URL
+
+     * To delete a configuration variable from the keystore, use keystore
+       delete:
+       npm
+       pnpm
+(BUTTON)npx hardhat keystore delete SEPOLIA_RPC_URL
+
+(BUTTON)pnpm hardhat keystore delete SEPOLIA_RPC_URL
+
+     * To list all stored variable names, use keystore list:
+       npm
+       pnpm
+(BUTTON)npx hardhat keystore list
+
+(BUTTON)pnpm hardhat keystore list
+
+     * To find the path to the keystore file, use keystore path:
+       npm
+       pnpm
+(BUTTON)npx hardhat keystore path
+
+(BUTTON)pnpm hardhat keystore path
+
+     * To change the keystore's password, use keystore change-password:
+       npm
+       pnpm
+(BUTTON)npx hardhat keystore change-password
+
+(BUTTON)pnpm hardhat keystore change-password
+
+   [48]Help us improve this page
+   Last Updated:8/13/2025, 6:37:37 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/learn-more/configuration-variables#how-to-use-configuration-variables-and-the-keystore-plugin
+  41. https://hardhat.org/docs/learn-more/configuration-variables#using-configuration-variables
+  42. https://www.alchemy.com/
+  43. https://www.infura.io/
+  44. https://hardhat.org/docs/learn-more/configuration-variables#the- hardhat-keystore -plugin
+  45. https://hardhat.org/docs/learn-more/configuration-variables#setup
+  46. https://hardhat.org/docs/learn-more/configuration-variables#using-the-keystore
+  47. https://hardhat.org/docs/learn-more/configuration-variables#managing-encrypted-variables
+  48. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/learn-more/configuration-variables.md
+
+   Hidden links:
+  50. https://hardhat.org/docs
+  51. https://github.com/NomicFoundation/hardhat
+  52. https://twitter.com/HardhatHQ
+  53. https://hardhat.org/discord
+  54. https://github.com/NomicFoundation/hardhat
+  55. https://twitter.com/HardhatHQ
+  56. https://hardhat.org/discord
+  57. https://github.com/NomicFoundation/hardhat
+  58. https://twitter.com/HardhatHQ
+  59. https://hardhat.org/discord

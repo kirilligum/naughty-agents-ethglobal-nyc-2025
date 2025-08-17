@@ -1,0 +1,251 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#Deploying smart contracts
+
+   Hardhat comes with an official deployment solution: [41]Hardhat
+   Ignition, a declarative system for deploying smart contracts. It's
+   already available in Hardhat 2 and has been adopted by many projects.
+   The API hasn't changed in Hardhat 3: if you're familiar with it, you
+   won't encounter any surprises.
+
+   With Hardhat Ignition, you define the smart contract instances you want
+   to deploy, along with any operations you want to perform on them. These
+   definitions are grouped into Ignition Modules, which are then analyzed
+   and executed in the most efficient way. This includes sending
+   independent transactions in parallel, recovering from errors, and
+   resuming interrupted deployments.
+
+   The sample project includes an Ignition Module as an example. To learn
+   more about how to write an Ignition module, please read [42]this
+   document.
+
+   To deploy the example module in a simulated network, run the following
+   command:
+   npm
+   pnpm
+(BUTTON)npx hardhat ignition deploy ignition/modules/Counter.ts
+
+(BUTTON)pnpm hardhat ignition deploy ignition/modules/Counter.ts
+
+   This deployment is executed on the default network, which lasts only
+   for the duration of the task. To simulate a deployment on a persistent
+   network, follow these steps:
+    1. Start a Hardhat node with npx hardhat node or pnpm hardhat node.
+    2. Open another terminal and deploy the module to the Hardhat node:
+       npm
+       pnpm
+(BUTTON)npx hardhat ignition deploy --network localhost ignition/modules/Counter
+.ts
+
+(BUTTON)pnpm hardhat ignition deploy --network localhost ignition/modules/Counte
+r.ts
+
+    3. Run the same command again once the deployment finishes. Since the
+       module has already been deployed, Ignition won't send any
+       transactions.
+    4. Without stopping the node, add the following line to the Ignition
+       module in ignition/modules/Counter.ts:
+(BUTTON)m.call(counter, "incBy", [5n]);
+
+m.call(counter, "inc");
+
+return { counter };
+
+    5. Run the command from step 2 once more. This time, only the new
+       action runs.
+
+   While Hardhat Ignition is our recommended approach for deploying
+   contracts, you're free to use other tools. For example, you can use
+   custom scripts for simple deployments or a deployment plugin from the
+   community.
+
+[43]#Managing secrets
+
+   Hardhat 3 includes an encrypted secrets manager that makes it easier to
+   handle sensitive information like private keys. This ensures you don't
+   have to hardcode secrets in your source code or store them in plain
+   text.
+
+   The sepolia network configuration uses an encrypted secret for its RPC
+   URL and private key:
+(BUTTON)networks: {
+  sepolia: {
+    type: "http",
+    chainType: "l1",
+    url: configVariable("SEPOLIA_RPC_URL"),
+    accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+  },
+},
+
+   Run the following tasks to add these secrets:
+   npm
+   pnpm
+(BUTTON)npx hardhat keystore set SEPOLIA_RPC_URL
+npx hardhat keystore set SEPOLIA_PRIVATE_KEY
+
+(BUTTON)pnpm hardhat keystore set SEPOLIA_RPC_URL
+pnpm hardhat keystore set SEPOLIA_PRIVATE_KEY
+
+   TIP
+
+   If you don't have an RPC URL for Sepolia, you can use a public one like
+   https://sepolia.gateway.tenderly.co. Keep in mind that public endpoints
+   like this can be slower and less reliable.
+
+   Once the secrets are set, you can deploy the Ignition module to
+   Sepolia:
+   npm
+   pnpm
+(BUTTON)npx hardhat ignition deploy --network sepolia ignition/modules/Counter.t
+s
+
+(BUTTON)pnpm hardhat ignition deploy --network sepolia ignition/modules/Counter.
+ts
+
+   Enter your password to decrypt the private key, confirm that you want
+   to deploy to Sepolia, and wait until Hardhat Ignition finishes the
+   deployment. After this, if you repeat the command, Ignition will detect
+   that the module has already been deployed and won't send any new
+   transactions.
+
+   Secrets are only decrypted when needed, which means you only need to
+   enter the password if a Hardhat task actually uses a secret.
+   [44]Help us improve this page
+   Last Updated:8/13/2025, 6:37:37 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/learn-more/deploying-contracts#deploying-smart-contracts
+  41. https://hardhat.org/ignition
+  42. https://hardhat.org/ignition/docs/guides/creating-modules
+  43. https://hardhat.org/docs/learn-more/deploying-contracts#managing-secrets
+  44. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/learn-more/deploying-contracts.md
+
+   Hidden links:
+  46. https://hardhat.org/docs
+  47. https://github.com/NomicFoundation/hardhat
+  48. https://twitter.com/HardhatHQ
+  49. https://hardhat.org/discord
+  50. https://github.com/NomicFoundation/hardhat
+  51. https://twitter.com/HardhatHQ
+  52. https://hardhat.org/discord
+  53. https://github.com/NomicFoundation/hardhat
+  54. https://twitter.com/HardhatHQ
+  55. https://hardhat.org/discord

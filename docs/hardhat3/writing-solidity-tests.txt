@@ -1,0 +1,306 @@
+   <
+   <
+   <
+   Hardhat 3 is now production ready. Migrate now
+   >
+   >
+   >
+   [1]logo logo logo logo
+     * [2]Home
+     * [3]Documentation
+     * [4]Plugins
+     * [5]Hardhat 2
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON)
+     * Hardhat 3
+          + [6]Getting started
+          + [7]Installation
+          + [8]Project structure
+          + [9]Writing a smart contract
+          + [10]Testing your contracts
+          + [11]Solidity tests
+          + [12]TypeScript tests
+          + [13]Writing scripts
+          + [14]Deploying contracts
+     * Learn more
+          + [15]What's new in Hardhat 3
+          + [16]Beta status
+          + [17]Writing Solidity tests
+          + [18]Using viem
+          + [19]Deploying contracts
+          + [20]Verifying contracts
+          + [21]Configuring the compiler
+          + [22]Configuration variables
+          + [23]Cookbook
+     * Migrate to Hardhat 3
+          + [24]From Hardhat 2
+     * Reference
+          + [25]Configuration
+          + [26]Error codes
+          + [27]Node.js support
+     * Troubleshooting
+          + [28]Getting help
+     * Plugins
+          + [29]Official plugins
+          + [30]Community plugins
+     * Hardhat 2
+          + [31]Documentation
+     * Other Hardhat components
+          + [32]Hardhat Ignition
+          + [33]Hardhat VSCode
+          + [34]Hardhat Network Helpers
+
+     * [35]Home
+     * [36]Documentation
+     * [37]Plugins
+     * [38]Hardhat 2
+     * [39]github
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+   (BUTTON) Menu
+
+     *
+     *
+     *
+
+   (BUTTON) A
+   theme-switcher theme-switcher theme-switcher theme-switcher
+
+[40]#Writing unit tests in Solidity
+
+   Hardhat supports writing tests in both TypeScript and Solidity.
+   TypeScript is typically used for higher-level integration tests,
+   whereas Solidity is better suited for unit tests. This guide explains
+   how to add Solidity tests to a Hardhat project, run them, and configure
+   their execution. This isn't meant to serve as an introduction to
+   Solidity tests and assumes familiarity with them.
+
+[41]#Writing Solidity tests
+
+   A Solidity file is considered a test file if:
+     * It's inside the test/ directory
+     * It's inside the contracts/ directory and ends with .t.sol.
+
+   Both of these directories can be changed in your Hardhat configuration,
+   but these are the default ones.
+
+   If a contract in a test file has at least one function that starts with
+   test, it's considered a test contract. When the tests are run, Hardhat
+   deploys every test contract and calls each of its test functions.
+
+   For example, if you have a file named contracts/CounterTest.t.sol or
+   test/CounterTest.sol with the following contract:
+(BUTTON)contract CounterTest {
+    function testInc() public {
+        Counter counter = new Counter();
+        counter.inc();
+        require(counter.count() == 1, "count should be 1");
+    }
+}
+
+   the test runner will deploy the CounterTest contract and call its
+   testInc function. If the function execution reverts, the test is
+   considered failed.
+
+   Hardhat also supports fuzz tests, which are similar to regular tests
+   but accept parameters. When the tests are executed, fuzz test functions
+   are called multiple times with random values as arguments:
+(BUTTON)contract CounterTest {
+    function testIncBy(uint by) public {
+        Counter counter = new Counter();
+        counter.incBy(by);
+        require(counter.count() == by, "count should match the 'by' value");
+    }
+}
+
+[42]#Assertion libraries
+
+   In the previous example, the error message doesn't show the actual
+   value of by that made the test fail. That's because interpolating the
+   value into the string isn't straightforward in Solidity. To get better
+   error messages, plus other useful functionality, you can use an
+   assertion library like [43]forge-std.
+
+   To use forge-std in a Hardhat project, first install it:
+   npm
+   pnpm
+(BUTTON)npm install --save-dev github:foundry-rs/forge-std#v1.9.7
+
+(BUTTON)pnpm install --save-dev github:foundry-rs/forge-std#v1.9.7
+
+   You can then import the Test base contract and extend your test
+   contracts from it. This lets you use helper functions like assertEq,
+   which shows the mismatched values when the assertion fails:
+(BUTTON)import { Test } from "forge-std/Test.sol";
+
+contract CounterTest is Test {
+    function testIncBy(uint by) public {
+        Counter counter = new Counter();
+        counter.incBy(by);
+        assertEq(counter.count(), by, "count should match the 'by' value");
+    }
+}
+
+[44]#Setup functions
+
+   Both the unit and fuzz test examples shown above create an instance of
+   the Counter contract. You can share setup logic like that across tests
+   using the setUp function, which is called before each test execution:
+(BUTTON)contract CounterTest {
+    Counter counter;
+
+    function setUp() public {
+      counter = new Counter();
+    }
+
+    function testInc() public {
+        counter.inc();
+        require(counter.count() == 1, "count should be 1");
+    }
+
+    function testIncBy(uint by) public {
+        counter.incBy(by);
+        require(counter.count() == by, "count should match the 'by' value");
+    }
+}
+
+[45]#Running Solidity tests
+
+   You can run all the tests in your Hardhat project using the test task:
+   npm
+   pnpm
+(BUTTON)npx hardhat test
+
+(BUTTON)pnpm hardhat test
+
+   If you only want to run your Solidity tests, use the test solidity task
+   instead:
+   npm
+   pnpm
+(BUTTON)npx hardhat test solidity
+
+(BUTTON)pnpm hardhat test solidity
+
+   You can also pass one or more paths as arguments to these tasks, in
+   which case only those files are executed:
+   npm
+   pnpm
+(BUTTON)npx hardhat test <test-file-1> <test-file-2> ...
+
+(BUTTON)npx hardhat test <test-file-1> <test-file-2> ...
+
+[46]#Configuring Solidity tests
+
+   You can configure how Solidity tests are executed in your Hardhat
+   configuration.
+
+[47]#Configuring the tests location
+
+   By default, Hardhat treats every Solidity file in the test/ directory
+   as a test file. To use a different location, set the
+   paths.tests.solidity field:
+(BUTTON)paths: {
+  tests: {
+    solidity: "./solidity-tests"
+  }
+},
+
+[48]#Configuring the tests execution
+
+   To configure how Solidity tests are executed, use the test.solidity
+   object in the Hardhat configuration.
+
+   For example, the ffi cheatcode is disabled by default for security
+   reasons, but you can enable it:
+(BUTTON)test: {
+  solidity: {
+    ffi: true,
+  },
+},
+
+   It's also possible to modify the execution environment of the tests.
+   For example, you can modify the address that is returned by msg.sender:
+(BUTTON)test: {
+  solidity: {
+    sender: "0x1234567890123456789012345678901234567890",
+  },
+},
+
+   [49]Help us improve this page
+   Last Updated:8/13/2025, 6:37:37 PM
+
+References
+
+   Visible links:
+   1. https://hardhat.org/
+   2. https://hardhat.org/
+   3. https://hardhat.org/docs/getting-started
+   4. https://hardhat.org/plugins
+   5. https://hardhat.org/hardhat2
+   6. https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3
+   7. https://hardhat.org/docs/getting-started#installation
+   8. https://hardhat.org/docs/getting-started#project-structure
+   9. https://hardhat.org/docs/getting-started#writing-a-smart-contract
+  10. https://hardhat.org/docs/getting-started#testing-your-contracts
+  11. https://hardhat.org/docs/getting-started#solidity-tests
+  12. https://hardhat.org/docs/getting-started#typescript-tests
+  13. https://hardhat.org/docs/getting-started#writing-scripts-to-interact-with-the-network
+  14. https://hardhat.org/docs/getting-started#deploying-contracts
+  15. https://hardhat.org/docs/learn-more/whats-new
+  16. https://hardhat.org/docs/learn-more/beta-status
+  17. https://hardhat.org/docs/learn-more/writing-solidity-tests
+  18. https://hardhat.org/docs/learn-more/using-viem
+  19. https://hardhat.org/docs/learn-more/deploying-contracts
+  20. https://hardhat.org/docs/learn-more/smart-contract-verification
+  21. https://hardhat.org/docs/learn-more/configuring-the-compiler
+  22. https://hardhat.org/docs/learn-more/configuration-variables
+  23. https://hardhat.org/docs/learn-more/cookbook
+  24. https://hardhat.org/migrate-from-hardhat2
+  25. https://hardhat.org/docs/reference/configuration
+  26. https://hardhat.org/docs/reference/errors
+  27. https://hardhat.org/docs/reference/nodejs-support
+  28. https://hardhat.org/docs/troubleshooting/getting-help
+  29. https://hardhat.org/plugins#official-plugins
+  30. https://hardhat.org/plugins#community-plugins
+  31. https://hardhat.org/hardhat2
+  32. https://hardhat.org/ignition/docs
+  33. https://hardhat.org/hardhat-vscode/docs
+  34. https://hardhat.org/hardhat-network-helpers/docs
+  35. https://hardhat.org/
+  36. https://hardhat.org/docs/getting-started
+  37. https://hardhat.org/plugins
+  38. https://hardhat.org/hardhat2
+  39. https://github.com/NomicFoundation/hardhat
+  40. https://hardhat.org/docs/learn-more/writing-solidity-tests#writing-unit-tests-in-solidity
+  41. https://hardhat.org/docs/learn-more/writing-solidity-tests#writing-solidity-tests
+  42. https://hardhat.org/docs/learn-more/writing-solidity-tests#assertion-libraries
+  43. https://github.com/foundry-rs/forge-std
+  44. https://hardhat.org/docs/learn-more/writing-solidity-tests#setup-functions
+  45. https://hardhat.org/docs/learn-more/writing-solidity-tests#running-solidity-tests
+  46. https://hardhat.org/docs/learn-more/writing-solidity-tests#configuring-solidity-tests
+  47. https://hardhat.org/docs/learn-more/writing-solidity-tests#configuring-the-tests-location
+  48. https://hardhat.org/docs/learn-more/writing-solidity-tests#configuring-the-tests-execution
+  49. https://github.com/NomicFoundation/hardhat-website/edit/main/src/content/docs/learn-more/writing-solidity-tests.md
+
+   Hidden links:
+  51. https://hardhat.org/docs
+  52. https://github.com/NomicFoundation/hardhat
+  53. https://twitter.com/HardhatHQ
+  54. https://hardhat.org/discord
+  55. https://github.com/NomicFoundation/hardhat
+  56. https://twitter.com/HardhatHQ
+  57. https://hardhat.org/discord
+  58. https://github.com/NomicFoundation/hardhat
+  59. https://twitter.com/HardhatHQ
+  60. https://hardhat.org/discord
