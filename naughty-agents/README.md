@@ -88,7 +88,33 @@ The Python script simulates the agent proposing transactions.
     python agent.py hijacked
     ```
 
-### d. Pitch Deck
+### d. API Server (for Reviewer Dashboard)
+
+The backend server uses the Coinbase SQL API to fetch review tasks.
+
+1.  **Navigate to the API server directory:**
+    ```bash
+    cd naughty-agents/api-server
+    ```
+2.  **Create a virtual environment and install dependencies:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
+3.  **Set up your environment variables:**
+    Create a `.env` file by copying the example file:
+    ```bash
+    cp .env.example .env
+    ```
+    Now, edit the `.env` file and add your `CDP_API_KEY`.
+4.  **Run the server:**
+    ```bash
+    python server.py
+    ```
+    The server will start on `http://127.0.0.1:5055`.
+
+### e. Pitch Deck
 
 The presentation is a simple HTML file.
 

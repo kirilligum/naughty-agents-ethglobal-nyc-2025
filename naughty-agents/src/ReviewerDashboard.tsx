@@ -1,100 +1,66 @@
-import { useState, useMemo, useEffect } from "react";
-import { useEvmAddress } from "@coinbase/cdp-hooks";
-import { SendTransactionButton, type SendTransactionButtonProps } from "@coinbase/cdp-react/components/SendTransactionButton";
-import { createPublicClient, http, encodeFunctionData } from "viem";
-import { baseSepolia } from "viem/chains";
-import WebOfTrust from "./artifacts/contracts/WebOfTrust.sol/WebOfTrust.json";
-
-// The address of the deployed WebOfTrust contract.
-const webOfTrustAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-const contractABI = WebOfTrust.abi;
-
-// Public client to read from the contract
-const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http(),
-});
+import { useState, useEffect, useCallback } from "react";
+import { listReviewTasks, type ReviewTask } from "./agentApi";
 
 function ReviewerDashboard() {
-  const { evmAddress } = useEvmAddress();
-  const [inviteCode, setInviteCode] = useState("");
-  const [requiredStake, setRequiredStake] = useState<bigint | undefined>();
-  const [status, setStatus] = useState("");
-  const [error, setError] = useState("");
+  const [tasks, setTasks] = useState<ReviewTask[]>([]);
+  const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function getStake() {
-      try {
-        const stake = await publicClient.readContract({
-          address: webOfTrustAddress,
-          abi: contractABI,
-          functionName: "requiredStake",
-        });
-        setRequiredStake(stake as bigint);
-      } catch (e: any) {
-        setError("Could not fetch required stake from contract.");
-      }
+  const refreshTasks = useCallback(async () => {
+    setStatus("loading");
+    setError(null);
+    try {
+      const fetchedTasks = await listReviewTasks();
+      setTasks(fetchedTasks);
+      setStatus("success");
+    } catch (e: any) {
+      setError(e.message);
+      setStatus("error");
     }
-    getStake();
   }, []);
 
-  const transaction = useMemo<SendTransactionButtonProps["transaction"] | undefined>(() => {
-    if (!evmAddress || !requiredStake || !inviteCode) {
-      return undefined;
-    }
-    return {
-      to: webOfTrustAddress,
-      value: requiredStake,
-      data: encodeFunctionData({
-        abi: contractABI,
-        functionName: 'register',
-        args: [inviteCode],
-      }),
-      chainId: 84532, // Base Sepolia
-    };
-  }, [evmAddress, requiredStake, inviteCode]);
-
-  const handleSuccess: SendTransactionButtonProps["onSuccess"] = (hash) => {
-    setStatus(`Transaction sent! Hash: ${hash}`);
-    setError("");
-  };
-
-  const handleError: SendTransactionButtonProps["onError"] = (err) => {
-    setError(err.message);
-    setStatus("");
-  };
+  useEffect(() => {
+    refreshTasks();
+  }, [refreshTasks]);
 
   return (
     <div className="card">
-      <h2 className="card-title">Reviewer Dashboard</h2>
-      <p>Have an invite code? Stake and register to become a reviewer.</p>
-      <div className="form-group">
-        <label htmlFor="inviteCode">Invite Code</label>
-        <input
-          type="text"
-          id="inviteCode"
-          value={inviteCode}
-          onChange={(e) => setInviteCode(e.target.value)}
-          placeholder="0x..."
-        />
-      </div>
-      {evmAddress && transaction ? (
-        <SendTransactionButton
-          account={evmAddress}
-          network="base-sepolia"
-          transaction={transaction}
-          onError={handleError}
-          onSuccess={handleSuccess}
-        >
-          Stake & Register
-        </SendTransactionButton>
-      ) : (
-        <button className="button" disabled>
-          Enter Invite Code
+      <div className="card-header">
+        <h2 className="card-title">Reviewer Dashboard</h2>
+        <button className="button button--secondary" onClick={refreshTasks} disabled={status === 'loading'}>
+          {status === 'loading' ? "Refreshing..." : "Refresh"}
         </button>
+      </div>
+
+      {status === 'loading' && <p>Loading tasks...</p>}
+      {status === 'error' && <p className="error">Error fetching tasks: {error}</p>}
+
+      {status === 'success' && (
+        <div className="task-list">
+          {tasks.length === 0 ? (
+            <p>No review tasks available.</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Action Hash</th>
+                  <th>Transaction</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map((task, index) => (
+                  <tr key={index}>
+                    <td>{new Date(task.block_timestamp).toLocaleString()}</td>
+                    <td><code>{task.parameters.actionHash ? task.parameters.actionHash.slice(0, 10) : 'N/A'}...</code></td>
+                    <td><a href={`https://sepolia.basescan.org/tx/${task.transaction_hash}`} target="_blank" rel="noopener noreferrer">View Tx</a></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       )}
-      {status && <p className="status">{status}</p>}
-      {error && <p className="error">{error}</p>}
     </div>
   );
 }
