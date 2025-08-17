@@ -1,68 +1,32 @@
 import { HardhatUserConfig, configVariable } from "hardhat/config";
-import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
-import hardhatKeystore from "@nomicfoundation/hardhat-keystore";
-
-// --- Resolve your secret variables here, before the config object ---
-
-// For base-sepolia
-const BASE_SEPOLIA_RPC_URL = configVariable("BASE_SEPOLIA_RPC_URL");
-const DEPLOYER_PRIVATE_KEY = configVariable("DEPLOYER_PRIVATE_KEY");
-
-// For sepolia (this also fixes the other network)
-const SEPOLIA_RPC_URL = configVariable("SEPOLIA_RPC_URL");
-const SEPOLIA_PRIVATE_KEY = configVariable("SEPOLIA_PRIVATE_KEY");
-
-// --- Main Configuration ---
+// The toolbox includes Viem, Ignition, Keystore, and the Node.js test runner.
+import hardhatToolboxViem from "@nomicfoundation/hardhat-toolbox-viem";
 
 const config: HardhatUserConfig = {
-  plugins: [hardhatToolboxViemPlugin, hardhatKeystore],
-  solidity: {
-    profiles: {
-      default: {
-        version: "0.8.28",
-      },
-      production: {
-        version: "0.8.28",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
-      },
-    },
-  },
+  solidity: "0.8.24",
+  plugins: [hardhatToolboxViem],
   networks: {
-    hardhatMainnet: {
+    // Local development network (Hardhat 3 style)
+    hardhat: {
       type: "edr-simulated",
       chainType: "l1",
     },
+    // Target network (Base Sepolia)
     "base-sepolia": {
       type: "http",
       chainType: "l1",
-      // Use the resolved variable. Hardhat's validator will now see a plain string.
-      url: BASE_SEPOLIA_RPC_URL,
-      // Use the resolved variable.
-      accounts: [DEPLOYER_PRIVATE_KEY],
+      // Use configVariable; it will be resolved from the keystore or .env file
+      url: configVariable("BASE_SEPOLIA_RPC_URL"),
+      // DEPLOYER_PRIVATE_KEY must be set in the keystore
+      accounts: [configVariable("DEPLOYER_PRIVATE_KEY")],
       chainId: 84532,
-    },
-    hardhatOp: {
-      type: "edr-simulated",
-      chainType: "op",
-    },
-    sepolia: {
-      type: "http",
-      chainType: "l1",
-      url: SEPOLIA_RPC_URL,
-      accounts: [SEPOLIA_PRIVATE_KEY],
     },
   },
   paths: {
-    artifacts: "./src/artifacts",
+    // CRITICAL: Output artifacts directly into the src folder for Vite access
+    artifacts: './src/artifacts',
     sources: "./contracts",
     tests: "./test",
-    cache: "./cache",
   },
 };
-
 export default config;

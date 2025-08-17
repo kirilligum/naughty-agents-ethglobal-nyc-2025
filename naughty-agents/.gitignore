@@ -46,3 +46,7 @@ dist-ssr
 
 # Hardhat coverage reports
 /coverage
+
+# Python
+agent-simulator/venv
+__pycache__/
