@@ -1,57 +1,115 @@
-# Sample Hardhat 3 Beta Project (`node:test` and `viem`)
+# Naughty Agents: A Decentralized AI Agent Firewall
 
-This project showcases a Hardhat 3 Beta project using the native Node.js test runner (`node:test`) and the `viem` library for Ethereum interactions.
+## 1. Project Overview
 
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+Naughty Agents is a decentralized, human-in-the-loop security protocol designed to solve the emerging threat of AI agent hijacking for on-chain financial actions. As AI agents are given control over wallets, the risk of them being manipulated by malicious actors—for instance, by seeing a Malicious Image Patch (MIP) in a social media feed—becomes a critical vulnerability. Our solution creates a robust, on-chain "firewall" that protects users by verifying every transaction an agent proposes.
 
-## Project Overview
+The protocol operates on the principle of "Trust but Verify." It uses an on-chain registry to instantly approve known-safe transactions while escalating unknown or suspicious transactions to a decentralized network of human reviewers. The system is powered by a self-sustaining crypto-economic model where user subscription fees fund rewards for the human reviewers, whose integrity is secured by a "Web of Trust" with delegated slashing.
 
-This example project includes:
+### System Architecture
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using [`node:test`](nodejs.org/api/test.html), the new Node.js native test runner, and [`viem`](https://viem.sh/).
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+- **Frontend (React on Vite):** User and reviewer interface. Integrates with CDP Embedded Wallets and deploys a Smart Contract Account (SCA) for the user.
+- **AI Agent (Python):** A simulator that acts as an operator for the user's SCA, proposing transactions without having execution rights.
+- **On-Chain Logic (Solidity on Hardhat):**
+    - **Smart Contract Account (SCA):** The user's wallet, which includes the `NaughtyAgentsSecurityModule`. This module intercepts every transaction, checks it against the `ActionRegistry`, and reverts it if it's blacklisted or unknown.
+    - **Core Contracts:** `WebOfTrust` (manages reviewers), `ActionRegistry` (stores blacklisted actions), `ReviewOracle` (manages the review queue), and `Treasury`.
 
-## Usage
+## 2. How to Run
 
-### Running Tests
+### Prerequisites
+- Node.js and pnpm
+- Python 3
 
-To run all the tests in the project, execute the following command:
+### a. Smart Contracts
 
-```shell
-npx hardhat test
-```
+The core logic of the protocol resides in the Solidity smart contracts.
 
-You can also selectively run the Solidity or `node:test` tests:
+1.  **Navigate to the project directory:**
+    ```bash
+    cd naughty-agents
+    ```
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
+3.  **Compile the contracts:**
+    ```bash
+    pnpm hardhat compile
+    ```
+4.  **Run the tests:**
+    ```bash
+    pnpm hardhat test
+    ```
+5.  **Deploy to a local network:**
+    In one terminal, start a local Hardhat node:
+    ```bash
+    pnpm hardhat node
+    ```
+    In another terminal, deploy the contracts using the Ignition script:
+    ```bash
+    pnpm hardhat ignition deploy ignition/modules/NaughtyAgents.ts --network localhost
+    ```
 
-```shell
-npx hardhat test solidity
-npx hardhat test nodejs
-```
+### b. Frontend dApp
 
-### Make a deployment to Sepolia
+The user and reviewer dashboards are built with React and Vite.
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+1.  **Navigate to the project directory:**
+    ```bash
+    cd naughty-agents
+    ```
+2.  **Run the development server:**
+    ```bash
+    pnpm dev
+    ```
+    This will start the frontend on a local server (usually `http://localhost:5173`).
 
-To run the deployment to a local chain:
+### c. AI Agent Simulator
 
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
-```
+The Python script simulates the agent proposing transactions.
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+1.  **Navigate to the agent directory:**
+    ```bash
+    cd naughty-agents/agent-simulator
+    ```
+2.  **Create a virtual environment and install dependencies:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # or . venv/bin/activate
+    pip install web3 python-dotenv
+    ```
+3.  **Run the simulation:**
+    You can run the simulation in two modes:
+    ```bash
+    # To simulate a normal, safe transaction
+    python agent.py benign
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
+    # To simulate a hijacked agent proposing a malicious transaction
+    python agent.py hijacked
+    ```
 
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
+### d. Pitch Deck
 
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
-```
+The presentation is a simple HTML file.
 
-After setting the variable, you can run the deployment with the Sepolia network:
+1.  **Open the file:**
+    Navigate to the `naughty-agents/pitch-deck/` directory and open the `index.html` file in your web browser.
 
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
-```
+## 3. User Flow (Demo Scenario)
+
+1.  **Onboarding:**
+    - **Alice (User):** Opens the dApp, signs in with her email (using CDP Embedded Wallets), and subscribes. This deploys her Smart Contract Account with the `NaughtyAgentsSecurityModule`.
+    - **Bob (Reviewer):** Uses an invite code from another member, goes to the "Reviewer View", and clicks "Stake & Register" to become a reviewer.
+
+2.  **The Attack:**
+    - Alice's AI agent, while browsing a simulated social media feed, is "hijacked" by a malicious image.
+    - The agent attempts to drain Alice's wallet by proposing a malicious transaction.
+    - The transaction is intercepted by the on-chain `NaughtyAgentsSecurityModule`. It checks the transaction's hash against the `ActionRegistry`, finds its status is "Unknown," and reverts the transaction. Simultaneously, it flags the action for human review via the `ReviewOracle`.
+
+3.  **Community Defense:**
+    - Bob sees the new review task in his dashboard.
+    - He analyzes the action and votes to blacklist it.
+    - Once enough reviewers vote (meeting the quorum), the `ReviewOracle` calls the `ActionRegistry` to permanently blacklist the action's hash.
+
+4.  **Economic Incentives:**
+    - If a reviewer like Bob makes a bad call, Alice can report him. This triggers the `reportBadReview` function in the `WebOfTrust` contract, which slashes a portion of Bob's stake and also a smaller portion of the stake of the person who invited him.
