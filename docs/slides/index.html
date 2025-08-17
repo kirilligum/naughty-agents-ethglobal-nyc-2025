@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Naughty Agents – ETHGlobal NYC 2025</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/reset.css" />
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/reveal.css" />
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/theme/black.css" id="theme" />
+
+    <style>
+      .reveal section h1,
+      .reveal section h2,
+      .reveal section h3 { text-transform: none; }
+      .footnote { font-size: 0.6em; opacity: 0.8; }
+      code.small { font-size: 0.8em; }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>Naughty Agents</h1>
+          <h3>Human-in-the-loop Security for On-chain AI Agents</h3>
+          <p class="footnote">ETHGlobal NYC 2025</p>
+        </section>
+
+        <section>
+          <h2>Problem</h2>
+          <ul>
+            <li>AI agents can be hijacked or tricked into malicious transactions</li>
+            <li>On-chain actions are irreversible</li>
+            <li>Users need a safety net without blocking good automation</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Solution: Naughty Agents Protocol</h2>
+          <ul>
+            <li>Security Module at wallet layer</li>
+            <li>Web of Trust of human reviewers (stake + invites)</li>
+            <li>Review Oracle for flagging, voting, resolving</li>
+            <li>Action Registry stores blacklisted action hashes</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Architecture</h2>
+          <ul>
+            <li><b>SCA Security Module</b> enforces Registry checks</li>
+            <li><b>Review Oracle</b> manages queue, votes, resolution</li>
+            <li><b>Web of Trust</b> invites, stakes, slashing (delegated)</li>
+            <li><b>Action Registry</b> on-chain blacklist (bytes32)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Atomic Action Hashing (A1)</h2>
+          <p>Deterministic Keccak-256 over canonical JSON</p>
+          <pre><code class="small" data-trim>
+Action: "native_transfer"
+Params: { "to": "0x...0001", "amount": 100 }
+Canonical JSON: {"action":"native_transfer","params":{"amount":100,"to":"0x...0001"}}
+Keccak-256: 0x806b7287a2da74039e73e3171087ca87ff859a08b743fc6e2a4ef168eefa0c52
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Demo Flow</h2>
+          <ol>
+            <li>Agent proposes action → compute hash (A1)</li>
+            <li>Flag to Review Oracle</li>
+            <li>Reviewers vote (quorum)</li>
+            <li>Resolve → Action Registry blacklists hash</li>
+            <li>Security Module blocks blacklisted actions</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Live Demo (Hackathon)</h2>
+          <ul>
+            <li>Frontend (React + Viem)</li>
+            <li>Python Agent API (hash, status, mock blacklist, reset)</li>
+            <li>Reviewer Dashboard (mock flag, vote, resolve)</li>
+            <li>On-chain environment currently mocked due to Hardhat issues</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>State of Implementation</h2>
+          <ul>
+            <li>Contracts drafted: WebOfTrust, ReviewOracle, ActionRegistry, SecurityModule</li>
+            <li>Frontend supports A1 hashing + API integration</li>
+            <li>Reviewer workflow: end-to-end mock</li>
+            <li>Next: unblock Hardhat 3, deploy locally/test, replace mocks</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Roadmap</h2>
+          <ul>
+            <li>Staking/slashing economics + delegated slashing</li>
+            <li>CDP Embedded Wallets onboarding</li>
+            <li>Base Sepolia deployment</li>
+            <li>AgentKit integration for richer agent actions</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Contact</h2>
+          <p>Team Naughty Agents</p>
+          <p class="footnote">Git repo: repo root</p>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/reveal.js/dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        slideNumber: true,
+        transition: 'slide',
+      });
+    </script>
+  </body>
+  </html>
+
+

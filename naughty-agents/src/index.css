@@ -314,3 +314,65 @@ header .wallet-address {
     --cdp-base-font-size: 20px;
   }
 }
+
+/* --- UI polish additions --- */
+
+button {
+  background-color: var(--cdp-example-accent-color);
+  color: var(--cdp-example-accent-foreground-color);
+  border: 1px solid var(--cdp-example-accent-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--cdp-example-accent-hover-color);
+  border-color: var(--cdp-example-accent-hover-color);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  border: 1px solid var(--cdp-example-card-border-color);
+}
+
+.badge-ok {
+  background-color: #1e8e3e;
+  color: #fff;
+  border-color: #1e8e3e;
+}
+
+.badge-down {
+  background-color: #a50e0e;
+  color: #fff;
+  border-color: #a50e0e;
+}
+
+.error-panel {
+  color: #fff;
+  background-color: #a50e0e;
+  border: 1px solid #7f0b0b;
+  border-radius: 8px;
+  padding: 0.75rem;
+  width: 100%;
+  max-width: var(--cdp-example-card-max-width);
+}
+
+.log-box {
+  background: #0f1115;
+  color: #d3d7de;
+  border: 1px solid var(--cdp-example-card-border-color);
+  border-radius: 8px;
+  padding: 0.75rem;
+  max-height: 300px;
+  overflow-y: auto;
+  width: 100%;
+}

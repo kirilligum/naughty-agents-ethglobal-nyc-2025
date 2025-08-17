@@ -1,0 +1,27 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "IReviewOracle",
+  "sourceName": "contracts/interfaces/IReviewOracle.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_actionHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "flagActionForReview",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/interfaces/IReviewOracle.sol",
+  "buildInfoId": "solc-0_8_28-d471feecf3977c7fa88b7b1f92f363bae2dbf572"
+}

@@ -30,6 +30,9 @@ importers:
       '@eslint/js':
         specifier: ^9.30.1
         version: 9.33.0
+      '@nomicfoundation/hardhat-ethers':
+        specifier: ^4.0.0
+        version: 4.0.0(hardhat@3.0.0)
       '@nomicfoundation/hardhat-ignition':
         specifier: ^3.0.0
         version: 3.0.0(@nomicfoundation/hardhat-verify@3.0.0(hardhat@3.0.0))(hardhat@3.0.0)
@@ -592,6 +595,11 @@ packages:
 
   '@nomicfoundation/hardhat-errors@3.0.0':
     resolution: {integrity: sha512-nYV5Z4Z5+xzL08GonNokPA3WbLngUB4H3XBmR9dnoLqM5ls90LmIuJdZy2dzxI0LbeG2pDT2r8wAJIBAStq1iA==}
+
+  '@nomicfoundation/hardhat-ethers@4.0.0':
+    resolution: {integrity: sha512-xLu5s9BJDufI9mP2I9IZYYAmDfoSCNZsZkeu+lw2fflpnqxYmg0NROlrJrYAIwGiY3VRc/JCuh19IQDKF/S1pA==}
+    peerDependencies:
+      hardhat: ^3.0.0
 
   '@nomicfoundation/hardhat-ignition-viem@3.0.0':
     resolution: {integrity: sha512-xvV51jHzR3ZumwSFlv0GxP0YOW2leuFf32Yv+l3upglZuxIBjJ9+VOXzHGuGmUTE7tJ51MaGuqRyJ44kb93raQ==}
@@ -1303,8 +1311,8 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
-  chalk@5.5.0:
-    resolution: {integrity: sha512-1tm8DTaJhPBG3bIkVeZt1iZM9GfSX2lzOeDVZH9R9ffRHpmHvxZ/QhgQH/aDTkswQVt+YHdXAdS/In/30OjCbg==}
+  chalk@5.6.0:
+    resolution: {integrity: sha512-46QrSQFyVSEyYAgQ22hQ+zDa60YHA4fBstHmtSApj1Y5vKtG27fWowW03jCk5KcbXEWPZUIR894aARCA/G1kfQ==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   color-convert@2.0.1:
@@ -2173,6 +2181,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
@@ -2753,6 +2773,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@nomicfoundation/hardhat-ethers@4.0.0(hardhat@3.0.0)':
+    dependencies:
+      '@nomicfoundation/hardhat-errors': 3.0.0
+      '@nomicfoundation/hardhat-utils': 3.0.0
+      debug: 4.4.1
+      ethereum-cryptography: 2.2.1
+      ethers: 6.15.0
+      hardhat: 3.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
   '@nomicfoundation/hardhat-ignition-viem@3.0.0(@nomicfoundation/hardhat-ignition@3.0.0(@nomicfoundation/hardhat-verify@3.0.0(hardhat@3.0.0))(hardhat@3.0.0))(@nomicfoundation/hardhat-verify@3.0.0(hardhat@3.0.0))(@nomicfoundation/hardhat-viem@3.0.0(hardhat@3.0.0)(viem@2.33.3(typescript@5.8.3)(zod@3.25.76)))(@nomicfoundation/ignition-core@3.0.0)(hardhat@3.0.0)(viem@2.33.3(typescript@5.8.3)(zod@3.25.76))':
     dependencies:
       '@nomicfoundation/hardhat-errors': 3.0.0
@@ -2772,7 +2805,7 @@ snapshots:
       '@nomicfoundation/hardhat-verify': 3.0.0(hardhat@3.0.0)
       '@nomicfoundation/ignition-core': 3.0.0
       '@nomicfoundation/ignition-ui': 3.0.0
-      chalk: 5.5.0
+      chalk: 5.6.0
       debug: 4.4.1
       hardhat: 3.0.0
       json5: 2.2.3
@@ -2789,7 +2822,7 @@ snapshots:
       '@nomicfoundation/hardhat-errors': 3.0.0
       '@nomicfoundation/hardhat-utils': 3.0.0
       '@nomicfoundation/hardhat-zod-utils': 3.0.0(zod@3.25.76)
-      chalk: 5.5.0
+      chalk: 5.6.0
       debug: 4.4.1
       hardhat: 3.0.0
       zod: 3.25.76
@@ -2807,7 +2840,7 @@ snapshots:
   '@nomicfoundation/hardhat-node-test-reporter@3.0.0':
     dependencies:
       '@actions/core': 1.11.1
-      chalk: 5.5.0
+      chalk: 5.6.0
       jest-diff: 29.7.0
 
   '@nomicfoundation/hardhat-node-test-runner@3.0.0(hardhat@3.0.0)':
@@ -2856,7 +2889,7 @@ snapshots:
       '@nomicfoundation/hardhat-utils': 3.0.0
       '@nomicfoundation/hardhat-zod-utils': 3.0.0(zod@3.25.76)
       cbor2: 1.12.0
-      chalk: 5.5.0
+      chalk: 5.6.0
       debug: 4.4.1
       hardhat: 3.0.0
       semver: 7.7.2
@@ -3508,7 +3541,7 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  chalk@5.5.0: {}
+  chalk@5.6.0: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -3826,7 +3859,7 @@ snapshots:
       '@nomicfoundation/solidity-analyzer': 0.1.2
       '@sentry/core': 9.46.0
       adm-zip: 0.4.16
-      chalk: 5.5.0
+      chalk: 5.6.0
       debug: 4.4.1
       enquirer: 2.4.1
       ethereum-cryptography: 2.2.1
@@ -3835,7 +3868,7 @@ snapshots:
       resolve.exports: 2.0.3
       semver: 7.7.2
       tsx: 4.20.4
-      ws: 8.18.2
+      ws: 8.18.3
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -4347,6 +4380,8 @@ snapshots:
   ws@8.17.1: {}
 
   ws@8.18.2: {}
+
+  ws@8.18.3: {}
 
   yallist@3.1.1: {}
 
