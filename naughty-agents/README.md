@@ -1,79 +1,57 @@
-# CDP React App
+# Sample Hardhat 3 Beta Project (`node:test` and `viem`)
 
-This project was generated with [`@coinbase/create-cdp-app`](https://coinbase.github.io/cdp-web/modules/_coinbase_create-cdp-app.html) using the React template.
+This project showcases a Hardhat 3 Beta project using the native Node.js test runner (`node:test`) and the `viem` library for Ethereum interactions.
 
-## Project Structure
+To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
 
-```
-src/
-├── App.tsx                # Main application component with routing and layout
-├── config.ts             # CDP configuration settings
-├── Header.tsx            # Navigation header with authentication status
-├── Icons.tsx             # Reusable icon components
-├── index.css            # Global styles and theme variables
-├── Loading.tsx          # Loading state component
-├── main.tsx            # Entry point with CDP provider setup
-├── SignedInScreen.tsx   # Screen displayed after successful authentication
-├── SignInScreen.tsx     # Authentication screen with CDP sign-in flow
-├── theme.ts            # Theme configuration and styling constants
-├── Transaction.tsx     # Example transaction flow using CDP Hooks
-├── UserBalance.tsx     # Component to display user's wallet balance
-```
+## Project Overview
 
-## Getting Started
+This example project includes:
 
-First, make sure you have your CDP Project ID:
+- A simple Hardhat configuration file.
+- Foundry-compatible Solidity unit tests.
+- TypeScript integration tests using [`node:test`](nodejs.org/api/test.html), the new Node.js native test runner, and [`viem`](https://viem.sh/).
+- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
 
-1. Sign in or create an account on the [CDP Portal](https://portal.cdp.coinbase.com)
-2. Copy your Project ID from the dashboard
-3. Go to the [Embedded Wallets CORS settings](https://portal.cdp.coinbase.com/products/embedded-wallets/cors)
-4. Click add origin and whitelist `http://localhost:3000` (or wherever your app will run)
+## Usage
 
-Then, copy the `env.example` file to `.env`, and populate the `VITE_CDP_PROJECT_ID` with your project id.
+### Running Tests
 
-Now you can start the development server:
+To run all the tests in the project, execute the following command:
 
-Using npm:
-```bash
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
+```shell
+npx hardhat test
 ```
 
-Using yarn:
-```bash
-# Install dependencies
-yarn
+You can also selectively run the Solidity or `node:test` tests:
 
-# Start the development server
-yarn dev
+```shell
+npx hardhat test solidity
+npx hardhat test nodejs
 ```
 
-Using pnpm:
-```bash
-# Install dependencies
-pnpm install
+### Make a deployment to Sepolia
 
-# Start the development server
-pnpm dev
+This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+
+To run the deployment to a local chain:
+
+```shell
+npx hardhat ignition deploy ignition/modules/Counter.ts
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to see your app.
+To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
 
-## Features
+You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
 
-This template comes with:
-- CDP React components for authentication
-- Example transaction components for Base Sepolia
-- Vite for fast development and building
-- TypeScript for type safety
-- ESLint for code quality
+To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
 
-## Learn More
+```shell
+npx hardhat keystore set SEPOLIA_PRIVATE_KEY
+```
 
-- [CDP Documentation](https://docs.cloud.coinbase.com/cdp/docs)
-- [CDP React Documentation](https://docs.cloud.coinbase.com/cdp/docs/react-components)
-- [CDP Portal](https://portal.cdp.coinbase.com)
-- [Vite Documentation](https://vitejs.dev)
+After setting the variable, you can run the deployment with the Sepolia network:
+
+```shell
+npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+```
