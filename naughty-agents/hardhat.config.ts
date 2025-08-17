@@ -24,7 +24,7 @@ const config: HardhatUserConfig = {
     zircuit: {
       type: "http",
       chainType: "l1",
-      url: configVariable("ZIRCUIT_RPC_URL", "https://zircuit1.p2pify.com/"),
+      url: configVariable("ZIRCUIT_RPC_URL"),
       accounts: [configVariable("ZIRCUIT_PRIVATE_KEY")],
     },
   },
