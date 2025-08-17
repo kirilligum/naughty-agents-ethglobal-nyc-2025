@@ -40,7 +40,10 @@ The core logic of the protocol resides in the Solidity smart contracts.
     ```bash
     pnpm hardhat test
     ```
-5.  **Deploy to a local network:**
+5.  **Deploy the Contracts:**
+    Before running the frontend, you should deploy the contracts to a network.
+
+    **a. Deploy to a Local Network**
     In one terminal, start a local Hardhat node:
     ```bash
     pnpm hardhat node
@@ -49,6 +52,25 @@ The core logic of the protocol resides in the Solidity smart contracts.
     ```bash
     pnpm hardhat ignition deploy ignition/modules/NaughtyAgents.ts --network localhost
     ```
+
+    **b. Deploy to a Testnet (Base Sepolia or Zircuit)**
+    1.  First, set up your environment variables. Copy the example file:
+        ```bash
+        cp .env.example .env
+        ```
+    2.  Edit the `.env` file and add your private key and a testnet RPC URL. For example, for Base Sepolia:
+        ```
+        BASE_SEPOLIA_RPC_URL="https://sepolia.base.org"
+        DEPLOYER_PRIVATE_KEY="YOUR_PRIVATE_KEY_HERE"
+        ```
+    3.  Run the deployment command, specifying the network:
+        ```bash
+        # Deploy to Base Sepolia
+        pnpm hardhat ignition deploy ignition/modules/NaughtyAgents.ts --network base-sepolia
+
+        # Deploy to Zircuit Testnet
+        pnpm hardhat ignition deploy ignition/modules/NaughtyAgents.ts --network zircuit
+        ```
 
 ### b. Frontend dApp
 
@@ -124,8 +146,8 @@ The presentation is a simple HTML file.
 ## 3. User Flow (Demo Scenario)
 
 1.  **Onboarding:**
-    - **Alice (User):** Opens the dApp, signs in with her email (using CDP Embedded Wallets), and subscribes. This deploys her Smart Contract Account with the `NaughtyAgentsSecurityModule`.
-    - **Bob (Reviewer):** Uses an invite code from another member, goes to the "Reviewer View", and clicks "Stake & Register" to become a reviewer.
+    - **Alice (User):** Opens the dApp, signs in with her email, and in the **User View** can interact with buttons like "Subscribe" and "Deploy Secure Wallet".
+    - **Bob (Reviewer):** Toggles to the **Reviewer View**, enters a valid invite code into the input field, and clicks the "Stake & Register" button to send an on-chain transaction to join the network.
 
 2.  **The Attack:**
     - Alice's AI agent, while browsing a simulated social media feed, is "hijacked" by a malicious image.
@@ -133,8 +155,8 @@ The presentation is a simple HTML file.
     - The transaction is intercepted by the on-chain `NaughtyAgentsSecurityModule`. It checks the transaction's hash against the `ActionRegistry`, finds its status is "Unknown," and reverts the transaction. Simultaneously, it flags the action for human review via the `ReviewOracle`.
 
 3.  **Community Defense:**
-    - Bob sees the new review task in his dashboard.
-    - He analyzes the action and votes to blacklist it.
+    - In the **Reviewer View**, Bob clicks "Refresh" to fetch the latest flagged actions from the backend API. New tasks appear in his dashboard.
+    - He analyzes the action and (in a future implementation) would click buttons to vote on it.
     - Once enough reviewers vote (meeting the quorum), the `ReviewOracle` calls the `ActionRegistry` to permanently blacklist the action's hash.
 
 4.  **Economic Incentives:**

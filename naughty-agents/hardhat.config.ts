@@ -21,6 +21,12 @@ const config: HardhatUserConfig = {
       accounts: [configVariable("DEPLOYER_PRIVATE_KEY")],
       chainId: 84532,
     },
+    zircuit: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("ZIRCUIT_RPC_URL", "https://zircuit1.p2pify.com/"),
+      accounts: [configVariable("ZIRCUIT_PRIVATE_KEY")],
+    },
   },
   paths: {
     // CRITICAL: Output artifacts directly into the src folder for Vite access
