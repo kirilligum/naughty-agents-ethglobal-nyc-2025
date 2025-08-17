@@ -182,8 +182,39 @@ This flow demonstrates the core functionality of the Naughty Agents protocol and
 
 - **Project:** Naughty Agents - A decentralized, human-in-the-loop security protocol for AI agents.
 - **CDP Tools Used:**
-    - `[x]` **CDP Embedded Wallets:** Used for seamless, email-based user onboarding, which is critical for abstracting away crypto complexity and making the dApp accessible.
-    - `[x]` **CDP Data APIs (SQL API):** Used as the core data layer for our Reviewer Dashboard. The backend server uses the SQL API to efficiently query for `ActionFlagged` events on the Zircuit testnet, providing reviewers with a real-time list of security threats to vote on.
+
+    ---
+    #### ✅ CDP Embedded Wallets
+    Used for seamless, email-based user onboarding and to initiate on-chain transactions from the frontend. This is critical for abstracting away crypto complexity and making the dApp accessible.
+
+    **Code Evidence:**
+    - **File:** `naughty-agents/src/SignInScreen.tsx`
+      ```typescript
+      import { AuthButton } from "@coinbase/cdp-react/components/AuthButton";
+      ```
+    - **File:** `naughty-agents/src/SignedInScreen.tsx`
+      ```typescript
+      import { useEvmAddress, useIsSignedIn } from "@coinbase/cdp-hooks";
+      ```
+    - **File:** `naughty-agents/src/ReviewerDashboard.tsx`
+      ```typescript
+      import { SendTransactionButton } from "@coinbase/cdp-react/components/SendTransactionButton";
+      ```
+    ---
+    #### ✅ CDP Data APIs (SQL API)
+    Used as the core data layer for our Reviewer Dashboard. The backend server uses the SQL API to efficiently query for `ActionFlagged` events on the Zircuit testnet, providing reviewers with a real-time list of security threats to vote on.
+
+    **Code Evidence:**
+    - **File:** `naughty-agents/api-server/server.py`
+      ```python
+      CDP_SQL_API_URL = "https://api.cdp.coinbase.com/platform/v2/data/query/run"
+      ```
+    - **File:** `naughty-agents/api-server/server.py`
+      ```python
+      response = requests.post(CDP_SQL_API_URL, headers=headers, json=payload)
+      ```
+    ---
+
 - **Developer Feedback:**
     > *(Please add your personal feedback here about your experience using the Coinbase Developer Platform tools.)*
 
