@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Naughty Agents Pitch Deck</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2>Naughty Agents</h2>
+					<p>A Decentralized Security Layer for the AI Agent Economy</p>
+					<p><small>ETHGlobal New York 2025</small></p>
+				</section>
+
+				<section>
+					<h3>The Problem</h3>
+					<h2>Your AI Agent Will Be Hacked</h2>
+					<ul>
+						<li>AI agents are being given control over our wallets and digital lives.</li>
+						<li>New research shows these agents can be hijacked by something as simple as a malicious image (MIP) in a social media feed.</li>
+						<li>A hijacked agent won't just malfunction—it will actively try to steal your funds. This isn't a future problem; it's happening now.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Why Centralized Solutions Will Fail</h3>
+					<h2>The Impossible Task of a Central Gatekeeper</h2>
+					<ul>
+						<li>A single company can't possibly keep up with the infinite number of new threats and malicious commands that will emerge.</li>
+						<li>Their security models are opaque, and their business interests may not always align with the user's.</li>
+						<li>We need a security model that is as open, adaptable, and decentralized as the web3 ecosystem itself.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Our Solution: Naughty Agents</h3>
+					<h2>A Human Firewall for AI</h2>
+					<ul>
+						<li>Naughty Agents is a decentralized, human-in-the-loop protocol that verifies every on-chain action your agent takes.</li>
+						<li><strong>INSTANT PROTECTION:</strong> An on-chain registry blocks known threats and approves safe actions instantly.</li>
+						<li><strong>COMMUNITY DEFENSE:</strong> A global network of staked human reviewers investigates new threats.</li>
+						<li><strong>ECONOMIC SECURITY:</strong> A "Web of Trust" with delegated slashing ensures all reviewers are financially incentivized to be honest and diligent.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>How It Works: System Architecture</h3>
+					<!-- Mermaid diagram will be added in the next step -->
+					<pre class="mermaid">
+						graph TD
+							subgraph User Space
+								A[React Frontend]
+								B[Python AI Agent w/ AgentKit]
+							end
+
+							subgraph On-Chain Logic
+								C[Action Registry]
+								D[Review Oracle]
+								E[Web of Trust]
+							end
+
+							A -- User Actions --> D
+							B -- Proposes Action --> C
+							C -- Whitelisted --> B
+							C -- Unknown --> D
+							D -- Voting --> E
+							D -- Blacklist --> C
+					</pre>
+				</section>
+
+				<section>
+					<h3>The Human Firewall: Web of Trust</h3>
+					<h2>Security Through Shared Responsibility</h2>
+					<ul>
+						<li>Our reviewer network is secured by two key crypto-economic principles:</li>
+						<li><strong>Staking:</strong> Reviewers must lock up ETH to participate. They have real skin in the game.</li>
+						<li><strong>Delegated Slashing:</strong> If a reviewer you invite acts maliciously and gets slashed, you lose a portion of your stake too.</li>
+					</ul>
+					<p>This creates a self-policing community where trust is not just social—it's backed by capital.</p>
+				</section>
+
+				<section>
+					<h3>Demo Flow</h3>
+					<!-- Mermaid diagram will be added in the next step -->
+					<pre class="mermaid">
+						sequenceDiagram
+							participant Agent
+							participant ActionRegistry
+							participant ReviewOracle
+							participant Reviewer
+
+							Agent->>ActionRegistry: Verify Action("transfer to 0xHacker...")
+							ActionRegistry-->>Agent: Status: Unknown
+							Agent->>ReviewOracle: Flag Action for Review
+							ReviewOracle->>Reviewer: New Task Available
+							Reviewer->>ReviewOracle: Cast Vote: Deny
+							ReviewOracle->>ActionRegistry: Add to Blacklist
+					</pre>
+				</section>
+
+				<section>
+					<h3>LIVE DEMO</h3>
+					<p>(This is where the live demo from the detailed flow occurs)</p>
+				</section>
+
+				<section>
+					<h3>The Business Model</h3>
+					<h2>A Self-Sustaining Security Economy</h2>
+					<ul>
+						<li><strong>Users:</strong> Pay a small monthly subscription fee (e.g., $5 in USDC) for protection.</li>
+						<li><strong>Reviewers:</strong> Earn rewards from the subscription pool for correctly identifying threats.</li>
+						<li><strong>Protocol:</strong> A small percentage of fees (2%) goes to the treasury to fund future development and DAO governance.</li>
+						<li><strong>Incentives:</strong> Reviewers earn a passive 1% commission for every correct review done by someone they invited, encouraging growth of the trusted network.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Sponsor Synergy</h3>
+					<h2>Built with the Best</h2>
+					<ul>
+						<li><strong>Coinbase:</strong> We used the full CDP stack: Embedded Wallets for seamless onboarding, AgentKit for a robust agent framework, and Server Wallets for execution.</li>
+						<li><strong>Zircuit/Saga:</strong> Our on-chain logic requires a high-performance, low-cost L2 to be viable.</li>
+						<li><strong>Hardhat:</strong> Our entire smart contract suite was built and tested using the industry-standard Hardhat environment.</li>
+						<li><strong>PayPal/Circle:</strong> The protocol's economy runs on stablecoins like PYUSD and USDC, providing a reliable medium of exchange for subscriptions and rewards.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>The Vision</h3>
+					<h2>The Open Standard for AI Safety</h2>
+					<ul>
+						<li>Our goal is to make Naughty Agents the universal, open-source security layer for all on-chain AI interactions.</li>
+						<li><strong>Short Term:</strong> Expand our to cover more protocols and dApps.</li>
+						<li><strong>Medium Term:</strong> Transition protocol governance to a full DAO run by NAG token holders.</li>
+						<li><strong>Long Term:</strong> Become a core piece of web3 infrastructure—a "Chainlink for AI safety"—that any developer can integrate to make their agent-powered applications safer for everyone.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Thank You</h3>
+					<h2>Naughty Agents</h2>
+					<p>[Your Team Members' Names/Handles]</p>
+					<p><a href="#">[Link to GitHub Repo]</a></p>
+					<h4>Questions?</h4>
+				</section>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/markdown/markdown.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.min.js"></script>
+		<script type="module">
+			// Using mermaid CDN
+			import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+			// Initializes mermaid to render all elements with class="mermaid"
+			mermaid.initialize({ startOnLoad: true });
+		</script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
