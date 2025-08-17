@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:local": "hardhat ignition deploy ./ignition/modules/NaughtyAgents.ts --network hardhatMainnet",
+    "deploy:base-sepolia": "hardhat ignition deploy ./ignition/modules/NaughtyAgents.ts --network base-sepolia"
   },
   "dependencies": {
     "@coinbase/cdp-core": "latest",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
+    "@nomicfoundation/hardhat-ethers": "^4.0.0",
     "@nomicfoundation/hardhat-ignition": "^3.0.0",
     "@nomicfoundation/hardhat-keystore": "^3.0.0",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.0",

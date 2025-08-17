@@ -1,0 +1,59 @@
+{
+  "blacklisted": [
+    "806b7287a2da74039e73e3171087ca87ff859a08b743fc6e2a4ef168eefa0c52"
+  ],
+  "tasks": [
+    {
+      "id": 0,
+      "hash": "806b7287a2da74039e73e3171087ca87ff859a08b743fc6e2a4ef168eefa0c52",
+      "action": "native_transfer",
+      "params": {
+        "to": "0x0000000000000000000000000000000000000001",
+        "amount": 100
+      },
+      "votesFor": 1,
+      "votesAgainst": 3,
+      "resolved": false
+    },
+    {
+      "id": 1,
+      "hash": "806b7287a2da74039e73e3171087ca87ff859a08b743fc6e2a4ef168eefa0c52",
+      "action": "native_transfer",
+      "params": {
+        "to": "0x0000000000000000000000000000000000000001",
+        "amount": 100
+      },
+      "votesFor": 0,
+      "votesAgainst": 0,
+      "resolved": false,
+      "ai": {
+        "riskScore": 0.7,
+        "label": "suspicious",
+        "reasons": [
+          "Action involves a transfer",
+          "Large notional amount"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "hash": "806b7287a2da74039e73e3171087ca87ff859a08b743fc6e2a4ef168eefa0c52",
+      "action": "native_transfer",
+      "params": {
+        "to": "0x0000000000000000000000000000000000000001",
+        "amount": 100
+      },
+      "votesFor": 0,
+      "votesAgainst": 0,
+      "resolved": false,
+      "ai": {
+        "riskScore": 0.7,
+        "label": "suspicious",
+        "reasons": [
+          "Action involves a transfer",
+          "Large notional amount"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-e2f9461a7473acc81441b6aac1a951851a522152",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/WebOfTrust.sol": "project/contracts/WebOfTrust.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/WebOfTrust.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ncontract WebOfTrust {\r\n    struct Member {\r\n        uint256 stakedAmount;\r\n        address invitedBy;\r\n        bool isActive;\r\n    }\r\n\r\n    mapping(address => Member) public members;\r\n    mapping(bytes32 => address) public inviterOfCode;\r\n    uint256 public requiredStake;\r\n    address public immutable GENESIS_MEMBER;\r\n\r\n    event MemberRegistered(address indexed member, address invitedBy);\r\n    event InviteCodeCreated(bytes32 indexed inviteCode, address indexed creator);\r\n\r\n    constructor(uint256 _requiredStake) {\r\n        requiredStake = _requiredStake;\r\n        GENESIS_MEMBER = msg.sender;\r\n        // Bootstrap the network\r\n        members[msg.sender] = Member({stakedAmount: 0, invitedBy: address(0), isActive: true});\r\n    }\r\n\r\n    modifier onlyActiveMember() {\r\n        require(members[msg.sender].isActive, \"Not an active member\");\r\n        _;\r\n    }\r\n\r\n    function createInviteCode() external onlyActiveMember returns (bytes32) {\r\n        // Simple pseudo-random code generation for MVP\r\n        bytes32 code = keccak256(abi.encodePacked(msg.sender, block.timestamp));\r\n        inviterOfCode[code] = msg.sender;\r\n        emit InviteCodeCreated(code, msg.sender);\r\n        return code;\r\n    }\r\n\r\n    function register(bytes32 _inviteCode) external payable {\r\n        require(msg.value >= requiredStake, \"Insufficient stake\");\r\n        require(!members[msg.sender].isActive, \"Already registered\");\r\n\r\n        address inviter = inviterOfCode[_inviteCode];\r\n        require(inviter != address(0), \"Invalid or used code\");\r\n\r\n        // Burn the code\r\n        delete inviterOfCode[_inviteCode];\r\n\r\n        members[msg.sender] = Member({\r\n            stakedAmount: msg.value,\r\n            invitedBy: inviter,\r\n            isActive: true\r\n        });\r\n        emit MemberRegistered(msg.sender, inviter);\r\n    }\r\n\r\n    uint256 public constant PRIMARY_SLASH_PERCENT = 10;\r\n    uint256 public constant DELEGATED_SLASH_PERCENT = 5;\r\n\r\n    // Simplified for MVP: Assumes the report is valid.\r\n    function reportBadReview(address _reviewer) external {\r\n        Member storage reviewer = members[_reviewer];\r\n        require(reviewer.isActive, \"Reviewer not active\");\r\n\r\n        // 1. Primary Slash (Multiply before dividing for precision)\r\n        uint256 primarySlash = (reviewer.stakedAmount * PRIMARY_SLASH_PERCENT) / 100;\r\n        reviewer.stakedAmount -= primarySlash;\r\n\r\n        // 2. Delegated Slash\r\n        address inviterAddr = reviewer.invitedBy;\r\n        if (inviterAddr != address(0) && inviterAddr != GENESIS_MEMBER) {\r\n            Member storage inviter = members[inviterAddr];\r\n            uint256 delegatedSlash = (inviter.stakedAmount * DELEGATED_SLASH_PERCENT) / 100;\r\n            inviter.stakedAmount -= delegatedSlash;\r\n        }\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

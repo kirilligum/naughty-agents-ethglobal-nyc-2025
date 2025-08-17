@@ -1,0 +1,59 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-d471feecf3977c7fa88b7b1f92f363bae2dbf572",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/ActionRegistry.sol": "project/contracts/ActionRegistry.sol",
+    "contracts/Counter.sol": "project/contracts/Counter.sol",
+    "contracts/NaughtyAgentsSecurityModule.sol": "project/contracts/NaughtyAgentsSecurityModule.sol",
+    "contracts/ReviewOracle.sol": "project/contracts/ReviewOracle.sol",
+    "contracts/WebOfTrust.sol": "project/contracts/WebOfTrust.sol",
+    "contracts/interfaces/IActionRegistry.sol": "project/contracts/interfaces/IActionRegistry.sol",
+    "contracts/interfaces/IReviewOracle.sol": "project/contracts/interfaces/IReviewOracle.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/ActionRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ncontract ActionRegistry {\r\n    // 0: Unknown, 2: Blacklisted\r\n    mapping(bytes32 => uint8) public actionStatus;\r\n    address public reviewOracleAddress;\r\n\r\n    // Called during deployment/setup (e.g., by Ignition)\r\n    function setReviewOracleAddress(address _oracleAddress) external {\r\n        require(reviewOracleAddress == address(0), \"Oracle already set\");\r\n        reviewOracleAddress = _oracleAddress;\r\n    }\r\n\r\n    modifier onlyReviewOracle() {\r\n        require(msg.sender == reviewOracleAddress, \"Not authorized\");\r\n        _;\r\n    }\r\n\r\n    function getActionStatus(bytes32 _actionHash) external view returns (uint8) {\r\n        return actionStatus[_actionHash];\r\n    }\r\n\r\n    function addToBlacklist(bytes32 _actionHash) external onlyReviewOracle {\r\n        actionStatus[_actionHash] = 2;\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/Counter.sol": {
+        "content": "// SPDX-License-Identifier: UNLICENSED\r\npragma solidity ^0.8.28;\r\n\r\ncontract Counter {\r\n  uint public x;\r\n\r\n  event Increment(uint by);\r\n\r\n  function inc() public {\r\n    x++;\r\n    emit Increment(1);\r\n  }\r\n\r\n  function incBy(uint by) public {\r\n    require(by > 0, \"incBy: increment should be positive\");\r\n    x += by;\r\n    emit Increment(by);\r\n  }\r\n}\r\n"
+      },
+      "project/contracts/interfaces/IActionRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ninterface IActionRegistry {\r\n    function getActionStatus(bytes32 _actionHash) external view returns (uint8);\r\n}\r\n\r\n"
+      },
+      "project/contracts/interfaces/IReviewOracle.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ninterface IReviewOracle {\r\n    function flagActionForReview(bytes32 _actionHash) external;\r\n}\r\n\r\n"
+      },
+      "project/contracts/NaughtyAgentsSecurityModule.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\nimport {IActionRegistry} from \"./interfaces/IActionRegistry.sol\";\r\nimport {IReviewOracle} from \"./interfaces/IReviewOracle.sol\";\r\n\r\ncontract NaughtyAgentsSecurityModule {\r\n    address public immutable actionRegistry;\r\n    address public immutable reviewOracle;\r\n\r\n    constructor(address _actionRegistry, address _reviewOracle) {\r\n        require(_actionRegistry != address(0) && _reviewOracle != address(0), \"Zero address\");\r\n        actionRegistry = _actionRegistry;\r\n        reviewOracle = _reviewOracle;\r\n    }\r\n\r\n    function calculateActionHash(address dest, uint256 value, bytes calldata data) public pure returns (bytes32) {\r\n        // MVP placeholder: hash raw tx tuple; frontend/agent should use A1 standard\r\n        return keccak256(abi.encode(dest, value, data));\r\n    }\r\n\r\n    // Called by the UserSCA during transaction validation phase\r\n    function validateTransaction(address dest, uint256 value, bytes calldata data) external returns (bool) {\r\n        bytes32 actionHash = calculateActionHash(dest, value, data);\r\n        uint8 status = IActionRegistry(actionRegistry).getActionStatus(actionHash);\r\n\r\n        if (status == 2) {\r\n            revert(\"NaughtyAgents: Action Blacklisted\");\r\n        }\r\n        if (status == 0) {\r\n            IReviewOracle(reviewOracle).flagActionForReview(actionHash);\r\n            revert(\"NaughtyAgents: Unknown Action - Pending Review\");\r\n        }\r\n        return true;\r\n    }\r\n}\r\n\r\n"
+      },
+      "project/contracts/ReviewOracle.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.24;\n\nimport {WebOfTrust} from \"./WebOfTrust.sol\";\nimport {ActionRegistry} from \"./ActionRegistry.sol\";\n\ncontract ReviewOracle {\n    struct ReviewTask {\n        bytes32 actionHash;\n        uint256 votesForBlacklist;\n        bool isResolved;\n    }\n\n    WebOfTrust public webOfTrust;\n    ActionRegistry public actionRegistry;\n    ReviewTask[] public tasks;\n    uint256 constant QUORUM = 3;\n\n    // mapping(taskId => mapping(address => hasVoted))\n    mapping(uint256 => mapping(address => bool)) public hasVoted;\n\n    event ActionFlagged(uint256 indexed taskId, bytes32 actionHash);\n\n    constructor(address _webOfTrust, address _actionRegistry) {\n        webOfTrust = WebOfTrust(_webOfTrust);\n        actionRegistry = ActionRegistry(_actionRegistry);\n    }\n\n    // Called by the Security Module\n    function flagActionForReview(bytes32 _actionHash) external {\n        require(actionRegistry.getActionStatus(_actionHash) == 0, \"Action already known\");\n        tasks.push(ReviewTask({\n            actionHash: _actionHash,\n            votesForBlacklist: 0,\n            isResolved: false\n        }));\n        emit ActionFlagged(tasks.length - 1, _actionHash);\n    }\n\n    // Only WebOfTrust members\n    function castBlacklistVote(uint256 _taskId, bool _approveBlacklist) external {\n        (, , bool isActive) = webOfTrust.members(msg.sender);\n        require(isActive, \"Not an active WebOfTrust member\");\n        require(!hasVoted[_taskId][msg.sender], \"Already voted\");\n        require(!tasks[_taskId].isResolved, \"Task already resolved\");\n\n        if (_approveBlacklist) {\n            tasks[_taskId].votesForBlacklist++;\n        }\n        hasVoted[_taskId][msg.sender] = true;\n    }\n\n    function resolveBlacklistVote(uint256 _taskId) external {\n        require(!tasks[_taskId].isResolved, \"Task already resolved\");\n        require(tasks[_taskId].votesForBlacklist >= QUORUM, \"Quorum not reached\");\n\n        tasks[_taskId].isResolved = true;\n        actionRegistry.addToBlacklist(tasks[_taskId].actionHash);\n    }\n}\n"
+      },
+      "project/contracts/WebOfTrust.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.24;\n\ncontract WebOfTrust {\n    struct Member {\n        uint256 stakedAmount;\n        address invitedBy;\n        bool isActive;\n    }\n\n    mapping(address => Member) public members;\n    mapping(bytes32 => address) public inviterOfCode;\n    uint256 public requiredStake;\n    address public immutable GENESIS_MEMBER;\n\n    event MemberRegistered(address indexed member, address invitedBy);\n    event InviteCodeCreated(bytes32 indexed inviteCode, address indexed creator);\n\n    constructor(uint256 _requiredStake) {\n        requiredStake = _requiredStake;\n        GENESIS_MEMBER = msg.sender;\n        // Bootstrap the network\n        members[msg.sender] = Member({stakedAmount: 0, invitedBy: address(0), isActive: true});\n    }\n\n    modifier onlyActiveMember() {\n        require(members[msg.sender].isActive, \"Not an active member\");\n        _;\n    }\n\n    function createInviteCode() external onlyActiveMember returns (bytes32) {\n        // Simple pseudo-random code generation for MVP\n        bytes32 code = keccak256(abi.encodePacked(msg.sender, block.timestamp));\n        inviterOfCode[code] = msg.sender;\n        emit InviteCodeCreated(code, msg.sender);\n        return code;\n    }\n\n    function register(bytes32 _inviteCode) external payable {\n        require(msg.value >= requiredStake, \"Insufficient stake\");\n        require(!members[msg.sender].isActive, \"Already registered\");\n\n        address inviter = inviterOfCode[_inviteCode];\n        require(inviter != address(0), \"Invalid or used code\");\n\n        // Burn the code\n        delete inviterOfCode[_inviteCode];\n\n        members[msg.sender] = Member({\n            stakedAmount: msg.value,\n            invitedBy: inviter,\n            isActive: true\n        });\n        emit MemberRegistered(msg.sender, inviter);\n    }\n\n    uint256 public constant PRIMARY_SLASH_PERCENT = 10;\n    uint256 public constant DELEGATED_SLASH_PERCENT = 5;\n\n    // Simplified for MVP: Assumes the report is valid.\n    function reportBadReview(address _reviewer) external {\n        Member storage reviewer = members[_reviewer];\n        require(reviewer.isActive, \"Reviewer not active\");\n\n        // 1. Primary Slash (Multiply before dividing for precision)\n        uint256 primarySlash = (reviewer.stakedAmount * PRIMARY_SLASH_PERCENT) / 100;\n        reviewer.stakedAmount -= primarySlash;\n\n        // 2. Delegated Slash\n        address inviterAddr = reviewer.invitedBy;\n        if (inviterAddr != address(0) && inviterAddr != GENESIS_MEMBER) {\n            Member storage inviter = members[inviterAddr];\n            uint256 delegatedSlash = (inviter.stakedAmount * DELEGATED_SLASH_PERCENT) / 100;\n            inviter.stakedAmount -= delegatedSlash;\n        }\n    }\n}\n"
+      }
+    }
+  }
+}

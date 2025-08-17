@@ -1,0 +1,102 @@
+import {Test} from "forge-std/Test.sol";
+import {ReviewOracle} from "../ReviewOracle.sol";
+import {WebOfTrust} from "../WebOfTrust.sol";
+import {ActionRegistry} from "../ActionRegistry.sol";
+
+contract ReviewOracleTest is Test {
+    ReviewOracle public oracle;
+    WebOfTrust public wot;
+    ActionRegistry public registry;
+    address public alice = address(0x1);
+    address public bob = address(0x2);
+    address public charlie = address(0x3);
+    uint256 constant STAKE = 0.01 ether;
+
+    function setUp() public {
+        wot = new WebOfTrust(STAKE);
+        registry = new ActionRegistry();
+        oracle = new ReviewOracle(address(wot), address(registry));
+
+        registry.setReviewOracleAddress(address(oracle));
+
+        // Register members to WebOfTrust for voting
+        vm.deal(alice, STAKE);
+        vm.deal(bob, STAKE);
+        vm.deal(charlie, STAKE);
+
+        vm.prank(wot.GENESIS_MEMBER());
+        bytes32 code1 = wot.createInviteCode();
+        bytes32 code2 = wot.createInviteCode();
+
+        vm.prank(alice);
+        wot.register{value: STAKE}(code1);
+
+        vm.prank(bob);
+        wot.register{value: STAKE}(code2);
+
+        // Charlie will be registered in a specific test
+    }
+
+    function test_FlagActionForReview() public {
+        bytes32 actionHash = keccak256(abi.encodePacked("malicious_action"));
+        vm.prank(alice); // Can be flagged by anyone
+        oracle.flagActionForReview(actionHash);
+        assertEq(oracle.tasks(0).actionHash, actionHash);
+        assertFalse(oracle.tasks(0).isResolved);
+    }
+
+    function test_CastBlacklistVote() public {
+        bytes32 actionHash = keccak256(abi.encodePacked("malicious_action"));
+        vm.prank(alice);
+        oracle.flagActionForReview(actionHash);
+
+        vm.prank(bob);
+        oracle.castBlacklistVote(0, true);
+        assertEq(oracle.tasks(0).votesForBlacklist, 1);
+        assertTrue(oracle.hasVoted(0, bob));
+    }
+
+    function test_ResolveBlacklistVote() public {
+        bytes32 actionHash = keccak256(abi.encodePacked("malicious_action"));
+        vm.prank(alice);
+        oracle.flagActionForReview(actionHash);
+
+        // Need 3 votes to reach quorum
+        vm.prank(wot.GENESIS_MEMBER());
+        oracle.castBlacklistVote(0, true);
+
+        vm.prank(alice);
+        oracle.castBlacklistVote(0, true);
+
+        vm.prank(bob);
+        oracle.castBlacklistVote(0, true);
+
+        vm.prank(alice); // Can be resolved by any member
+        oracle.resolveBlacklistVote(0);
+
+        assertTrue(oracle.tasks(0).isResolved);
+        assertEq(registry.actionStatus(actionHash), 2); // 2 for blacklisted
+    }
+
+    function testFail_CastVoteNotActiveMember() public {
+        bytes32 actionHash = keccak256(abi.encodePacked("malicious_action"));
+        vm.prank(alice);
+        oracle.flagActionForReview(actionHash);
+
+        // Charlie is not registered yet
+        vm.prank(charlie);
+        oracle.castBlacklistVote(0, true); // Should revert
+    }
+
+    function testFail_ResolveQuorumNotReached() public {
+        bytes32 actionHash = keccak256(abi.encodePacked("malicious_action"));
+        vm.prank(alice);
+        oracle.flagActionForReview(actionHash);
+
+        vm.prank(bob);
+        oracle.castBlacklistVote(0, true); // Only 1 vote
+
+        vm.prank(alice);
+        oracle.resolveBlacklistVote(0); // Should revert
+    }
+}

@@ -1,0 +1,45 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-af945737237e305b79e84c52d8404bdbb7b1b110",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/NaughtyAgentsSecurityModule.sol": "project/contracts/NaughtyAgentsSecurityModule.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/interfaces/IActionRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ninterface IActionRegistry {\r\n    function getActionStatus(bytes32 _actionHash) external view returns (uint8);\r\n}\r\n\r\n"
+      },
+      "project/contracts/interfaces/IReviewOracle.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ninterface IReviewOracle {\r\n    function flagActionForReview(bytes32 _actionHash) external;\r\n}\r\n\r\n"
+      },
+      "project/contracts/NaughtyAgentsSecurityModule.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\nimport {IActionRegistry} from \"./interfaces/IActionRegistry.sol\";\r\nimport {IReviewOracle} from \"./interfaces/IReviewOracle.sol\";\r\n\r\ncontract NaughtyAgentsSecurityModule {\r\n    address public immutable actionRegistry;\r\n    address public immutable reviewOracle;\r\n\r\n    constructor(address _actionRegistry, address _reviewOracle) {\r\n        require(_actionRegistry != address(0) && _reviewOracle != address(0), \"Zero address\");\r\n        actionRegistry = _actionRegistry;\r\n        reviewOracle = _reviewOracle;\r\n    }\r\n\r\n    function calculateActionHash(address dest, uint256 value, bytes calldata data) public pure returns (bytes32) {\r\n        // MVP placeholder: hash raw tx tuple; frontend/agent should use A1 standard\r\n        return keccak256(abi.encode(dest, value, data));\r\n    }\r\n\r\n    // Called by the UserSCA during transaction validation phase\r\n    function validateTransaction(address dest, uint256 value, bytes calldata data) external returns (bool) {\r\n        bytes32 actionHash = calculateActionHash(dest, value, data);\r\n        uint8 status = IActionRegistry(actionRegistry).getActionStatus(actionHash);\r\n\r\n        if (status == 2) {\r\n            revert(\"NaughtyAgents: Action Blacklisted\");\r\n        }\r\n        if (status == 0) {\r\n            IReviewOracle(reviewOracle).flagActionForReview(actionHash);\r\n            revert(\"NaughtyAgents: Unknown Action - Pending Review\");\r\n        }\r\n        return true;\r\n    }\r\n}\r\n\r\n"
+      }
+    }
+  }
+}

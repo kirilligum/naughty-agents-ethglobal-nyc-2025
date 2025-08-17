@@ -3,6 +3,7 @@ import { useIsInitialized, useIsSignedIn } from "@coinbase/cdp-hooks";
 import Loading from "./Loading";
 import SignedInScreen from "./SignedInScreen";
 import SignInScreen from "./SignInScreen";
+import Header from "./components/Header";
 
 /**
  * This component how to use the useIsIntialized, useEvmAddress, and useIsSignedIn hooks.
@@ -14,6 +15,7 @@ function App() {
 
   return (
     <div className="app flex-col-container flex-grow">
+      <Header />
       {!isInitialized && <Loading />}
       {isInitialized && (
         <>
